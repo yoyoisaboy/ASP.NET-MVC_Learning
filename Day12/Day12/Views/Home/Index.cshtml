@@ -1,0 +1,185 @@
+﻿
+@{
+    ViewBag.Title = "客戶管理";
+}
+
+
+
+<script>
+   $(document).ready(function () {
+
+       var apiurl = "http://localhost:44328/api/tCustomer";
+
+       fnLoadData();
+
+       function fnLoadData() {
+           $.ajax({
+               url: apiurl,
+               type: 'GET',
+               success: function (data) {
+                   $("#tableshow").empty();
+                   $("#tableshow").append
+                       ("<tr><th>編號</th><th>姓名</th><th>電話</th><th>地址</th><th></th></tr>");
+                   for (var i = 0; i < data.length; i++) {
+                       $("#tableshow").append
+                           (
+                           "<tr>" +
+                           "<td>" + data[i].fCustId + "</td>" +
+                           "<td>" + data[i].fName + "</td>" +
+                           "<td>" + data[i].fPhone + "</td>" +
+                           "<td>" + data[i].fAddress + "</td>" +
+                           "<td><input type='button' value='選取' id='btnSelect" + i +
+                           "' class='btn btn-info' /></td>" +
+                           "</tr>"
+                           );
+                       $("#btnSelect" + i)
+                           .on("click", { fCustId: data[i].fCustId },
+                           fnSelectData);
+                   }
+                   $("#fCustId").val("");
+                   $("#fName").val("");
+                   $("#fPhone").val("");
+                   $("#fAddress").val("");
+               }
+           });
+       }
+
+
+       function fnSelectData(event) {
+           var fCustId = event.data.fCustId;
+           $.ajax({
+               url: apiurl + "?fCustId=" + encodeURI(fCustId),
+               type: 'GET',
+               success: function (data) {
+                   $("#fCustId").val(data.fCustId);
+                   $("#fName").val(data.fName);
+                   $("#fPhone").val(data.fPhone);
+                   $("#fAddress").val(data.fAddress);
+               }
+           });
+       }
+
+
+       $("#btnCreate").on("click", fnCreate);
+       $("#btnEdit").on("click", fnEdit);
+       $("#btnDelete").on("click", fnDelete);
+
+       function fnCreate() {
+           var r = confirm("確定要新增嗎?");
+           if (r == true) {
+               var custId, name, phone, address;
+               custId = $("#fCustId").val();
+               name = $("#fName").val();
+               phone = $("#fPhone").val();
+               address = $("#fAddress").val();
+               var customer = JSON.stringify(
+                   {
+                       fCustId: custId, fName: name,
+                       fPhone: phone, fAddress: address
+                   }
+               );
+               $.ajax({
+                   url: apiurl ,
+                   type: 'POST',
+                   data: customer,
+                   contentType: 'application/json; charset=utf-8',
+                   success: function (result) {
+                       if (result != 0) {
+                           alert("新增成功");
+                           fnLoadData();
+                       } else {
+                           alert("新增失敗");
+                       }
+                   }
+               });
+           }
+       }
+
+       function fnEdit() {
+           var r = confirm("確定要修改嗎?");
+           if (r == true) {
+               var custId, name, phone, address;
+               custId = $("#fCustId").val();
+               name = $("#fName").val();
+               phone = $("#fPhone").val();
+               address = $("#fAddress").val();
+               var customer = JSON.stringify(
+                   {
+                       fCustId: custId, fName: name,
+                       fPhone: phone, fAddress: address
+                   }
+               );
+               $.ajax({
+                   url: apiurl ,
+                   type: 'PUT',
+                   data: customer,
+                   contentType: 'application/json; charset=utf-8',
+                   success: function (result) {
+                       if (result != 0) {
+                           alert("修改成功");
+                           fnLoadData();
+                       } else {
+                           alert("修改失敗");
+                       }
+                   }
+               });
+           }
+       }
+
+       function fnDelete() {
+           var r = confirm("確定要刪除嗎?");
+           if (r == true) {
+               var fCustId = $("#fCustId").val();
+               $.ajax({
+                   url: apiurl + "?fCustId=" + encodeURI(fCustId),
+                   type: 'DELETE',
+                   success: function (result) {
+                       if (result != 0) {
+                           alert("刪除成功");
+                           fnLoadData();
+                       } else {
+                           alert("刪除失敗");
+                       }
+                   }
+               });
+           }
+       }
+
+   });
+</script>
+
+<h2>客戶管理</h2>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">客戶管理</div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label for="fCustId">編號</label>
+            <input type="text" class="form-control" id="fCustId">
+        </div>
+        <div class="form-group">
+            <label for="fName">姓名</label>
+            <input type="text" class="form-control" id="fName">
+        </div>
+        <div class="form-group">
+            <label for="fPhone">電話</label>
+            <input type="text" class="form-control" id="fPhone">
+        </div>
+        <div class="form-group">
+            <label for="fAddress">地址</label>
+            <input type="text" class="form-control" id="fAddress">
+        </div>
+        <input type="button" value="新增" id="btnCreate"
+               class="btn btn-primary" />
+        <input type="button" value="修改" id="btnEdit"
+               class="btn btn-success" />
+        <input type="button" value="刪除" id="btnDelete"
+               class="btn btn-danger" />
+    </div>
+</div>
+
+
+<table class="table" id="tableshow">
+</table>
+
+
