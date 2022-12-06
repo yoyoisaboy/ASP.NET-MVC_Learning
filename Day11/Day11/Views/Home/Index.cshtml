@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "農村地方美食小吃特色料理";
+}
+
+<script>
+
+    $(document).ready(function () {
+        var dataurl = "https://data.coa.gov.tw/Service/OpenData/ODwsv/ODwsvTravelFood.aspx";
+
+
+
+       $.ajax({
+           url: dataurl,
+           type: 'GET',
+           success: function (data) {
+               tdata = data;
+               alert("農村地方美食小吃特色料理共" + data.length + "筆記錄");
+               for (var i = 0; i < data.length; i++) {
+                   $("#divShow").append
+                       (
+                       "<div class='col-sm-4' style='margin-top:15px;'>" +
+                          "<div class='thumbnail'>" +
+                              "<img src='" + data[i].PicURL + "' style='width:100%;'>" +
+                              "<div class='caption'>" +
+                                 "<h3>" + data[i].Name + "</h3>" +
+                                 "<p>" + data[i].Address + "</p>" +
+                                 "<input type='button' id='btn" + i + "' class='btn btn-info' data-toggle='modal' data-target='#myModal'   value='更多資訊'>" +
+                              "</div>" +
+                           "</div>" +
+                       "</div>"
+                       );
+                   $("#btn" + i).on("click", { index: i }, fnDetails);
+               }
+           }
+        });
+
+       var tdata;
+       function fnDetails(event) {
+           var index = event.data.index;
+           $("#MName").html(tdata[index].Name);
+           $("#HostWords").html("<img src='" + tdata[index].PicURL + "' style='width:100%;'><hr>" + tdata[index].HostWords);
+           $("#btnMap").html("<a href='https://www.google.com.tw/maps/place/" + tdata[index].Address + " ' target='_blank' class='btn btn-success'>地圖</a>");
+       }
+   });
+</script>
+
+<h2>農村地方美食小吃特色料理</h2>
+
+
+<div class="row" id="divShow">
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="MName">標題</h4>
+            </div>
+            <div class="modal-body">
+                <p id="HostWords">圖與內文</p>
+            </div>
+            <div class="modal-footer">
+                <span id="btnMap">地圖連結鈕</span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
