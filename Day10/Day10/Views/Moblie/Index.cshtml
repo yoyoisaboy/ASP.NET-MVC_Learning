@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Day10.Models.產品類別統計ViewModel>
+
+@{
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+<div data-role="content">
+    <div style="text-align:center">
+        <img src="~/Images/question.png" style="max-width:10%" />
+        <p>xxx課程</p>
+    </div>
+    <ul data-role="listview" data-inset="true">
+        <li data-role="list-divider">
+            購物類別專區
+        </li>
+        @foreach (var item in Model)
+        {
+            <li>
+                <a href="@Url.Action("Products")?cid=@item.類別編號" data-ajax="false">
+                    @item.類別名稱
+                    <span class="ui-li-count">@item.數量</span>
+                </a>
+            </li>
+        }
+    </ul>
+</div>

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="NorthwindModelStoreContainer" CdmEntityContainer="NorthwindEntities">
+    <EntitySetMapping Name="產品資料">
+      <EntityTypeMapping TypeName="NorthwindModel.產品資料">
+        <MappingFragment StoreEntitySet="產品資料">
+          <ScalarProperty Name="產品編號" ColumnName="產品編號" />
+          <ScalarProperty Name="產品" ColumnName="產品" />
+          <ScalarProperty Name="供應商編號" ColumnName="供應商編號" />
+          <ScalarProperty Name="類別編號" ColumnName="類別編號" />
+          <ScalarProperty Name="單位數量" ColumnName="單位數量" />
+          <ScalarProperty Name="單價" ColumnName="單價" />
+          <ScalarProperty Name="庫存量" ColumnName="庫存量" />
+          <ScalarProperty Name="已訂購量" ColumnName="已訂購量" />
+          <ScalarProperty Name="安全存量" ColumnName="安全存量" />
+          <ScalarProperty Name="不再銷售" ColumnName="不再銷售" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="產品類別">
+      <EntityTypeMapping TypeName="NorthwindModel.產品類別">
+        <MappingFragment StoreEntitySet="產品類別">
+          <ScalarProperty Name="類別編號" ColumnName="類別編號" />
+          <ScalarProperty Name="類別名稱" ColumnName="類別名稱" />
+          <ScalarProperty Name="說明" ColumnName="說明" />
+          <ScalarProperty Name="圖片" ColumnName="圖片" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

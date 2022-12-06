@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Day08.Models.ProductViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.產品編號)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.類別名稱)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.產品)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.單位數量)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.單價)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.特價)
+        </th>
+
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.產品編號)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.類別名稱)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.產品)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.單位數量)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.單價)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.特價)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.產品編號 }) |
+            @Html.ActionLink("Details", "Details", new { id=item.產品編號 }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.產品編號 })
+        </td>
+    </tr>
+}
+
+</table>

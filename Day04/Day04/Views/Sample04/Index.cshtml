@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Day04.Models.Movie>
+@{
+    ViewBag.Title = "Index";
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container" style="margin-top:20px;">
+            <p>
+                @{
+                    int i = 0;
+                    foreach (var item in Model)
+                    {
+                        <!--Url.Action:跑目前的控制器、link套用按鈕框、onmouse事件顯示名稱 -->
+                        <a href="@Url.Action("Index")?episode=@i"
+                           onmouseover="fnMouseOver('@item.Name');"
+                           onmouseout="fnMouseOut();" class="btn btn-success">
+                            第 @(i+1) 集
+                        </a>
+                        i++;
+                    }
+                }
+            </p>
+
+        <div class="card">
+            <div class="card-header bg-warning">
+                目前影片: <span id="spanTitle"></span>
+            </div>
+            <div class="card-body">
+                <iframe width="560" height="315"
+                        src="https://www.youtube.com/embed/@ViewBag.MovieId"
+                        frameborder="0"
+                        allow="autoplay:encrypted-media"
+                        allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /*滑鼠停留在按鈕顯示影片名稱，塞名稱給id=spanTitle*/
+        function fnMouseOver(title) {
+            document.getElementById("spanTitle").innerHTML = title;
+        }
+        /*滑鼠離開按鈕，塞""給id=spanTitle*/
+        function fnMouseOut() {
+            document.getElementById("spanTitle").innerHTML = "";
+        }
+    </script>
+
+</body>
+</html>

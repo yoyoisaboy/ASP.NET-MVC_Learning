@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Day09.Models.產品類別>
+
+@{
+    ViewBag.Title = "類別管理";
+}
+
+<h2>類別管理</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.類別編號)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.類別名稱)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.編輯者)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.建立日)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.修改日)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.類別編號)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.類別名稱)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.編輯者)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.建立日)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.修改日)
+        </td>
+        <td>
+            @{ string Permission = ViewBag.Permission.ToString(); }
+            @if (Permission.Contains("U"))
+            {
+                @Html.ActionLink("編輯", "Edit", new { cid = item.類別編號 }, new { @class = "btn btn-success" } )
+            }
+            @if (Permission.Contains("D"))
+            {
+                @Html.ActionLink("刪除", "Delete", new { cid = item.類別編號 }, new { @class = "btn btn-danger",onclick="return confirm('是否刪除?');" })
+            }
+
+        </td>
+    </tr>
+}
+
+</table>

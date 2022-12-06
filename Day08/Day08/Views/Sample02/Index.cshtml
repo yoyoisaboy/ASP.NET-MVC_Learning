@@ -1,0 +1,98 @@
+﻿@model Day08.Models.CategoryProductViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<div class="row">
+    <div class="col-sm-2">
+        @foreach(var item in Model.Category)
+        {
+            <p>@Html.ActionLink(item.類別名稱,"Index",new { cid = item.類別編號 })</p>
+        }
+    </div>
+    <div class="col-sm-10">
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().產品編號)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().產品)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().供應商編號)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().類別編號)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().單位數量)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().單價)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().庫存量)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().已訂購量)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().安全存量)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().不再銷售)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.Product)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.產品編號)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.產品)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.供應商編號)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.類別編號)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.單位數量)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.單價)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.庫存量)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.已訂購量)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.安全存量)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.不再銷售)
+                    </td>
+
+                </tr>
+            }
+
+        </table>
+
+    </div>
+</div>
+
+

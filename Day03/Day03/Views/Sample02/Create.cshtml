@@ -1,0 +1,23 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    <div>
+        @using (Html.BeginForm("Create", "Sample02", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="file" name="myfiles" multiple />
+            <input type="submit" value="上傳" />
+        }
+    </div>
+    <form enctype="multipart/form-data" method="post" action="@Url.Action("Create")">
+        <p>照片<input type="file" name="myfiles" multiple /></p>
+        <p><input type="submit" value="upload" /></p>
+    </form>
+</body>
+</html>

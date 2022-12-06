@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Day04.Models.Movie>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div class="container" style="margin-top:20px;">
+        <div class="row">
+            <p>
+                @{
+                    foreach (var item in Model)
+                    {
+                        <div class="col-12 col-md-4" style="margin-top:20px;">
+                            <div class="img-thumbnail">
+                                <iframe class="embed-responsive"
+                                        src="https://www.youtube.com/embed/@item.Id"
+                                        frameborder="0" allow="autoplay:encrypted-media"
+                                        allowfullscreen></iframe>
+                                <h4>@item.Name</h4>
+                                <a href="https://www.youtube.com/watch?v=@item.Id"
+                                   target="_blank" class="btn btn-primary">瀏覽</a>
+                            </div>
+                        </div>
+                    }
+                }
+            </p>
+        </div>
+    </div>
+</body>
+</html>

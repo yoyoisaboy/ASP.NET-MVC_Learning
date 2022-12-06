@@ -1,0 +1,87 @@
+﻿@model Day10.Models.產品類別產品資料ViewModel
+
+@{
+    ViewBag.Title = "Index";
+    string Permission = ViewBag.Permission.ToString();
+}
+
+<div>產品列表</div>
+<div class="row">
+    <div class="col-sm-2">
+    @foreach (var item in Model.Category)
+    {
+        <p>@Html.ActionLink(item.類別名稱, "Index", new { cid = item.類別編號 })</p>
+    }
+    </div>
+    <div class="col-sm-10">
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().類別編號)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().品名)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().單價)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().圖示)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().編輯者)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().建立日)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().修改日)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model.Product)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.類別編號)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.品名)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.單價)
+            </td>
+            <td>
+                <img src="~/Images/@item.圖示" style="width:120px;" />
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.編輯者)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.建立日)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.修改日)
+            </td>
+            <td>
+                @if (Permission.Contains('U'))
+                {
+                    @Html.ActionLink("編輯", "Edit", new { pid = item.產品編號 }, new { @class = "btn btn-success" })
+                }
+                <p></p>
+                @if (Permission.Contains('D'))
+                {
+                    @Html.ActionLink("刪除", "Delete", new { pid = item.產品編號 }, new { @class = "btn btn-danger", onclick = "return confirm('是否刪除?');" })
+                }
+
+
+            </td>
+        </tr>
+            }
+
+        </table>
+    </div>
+</div>

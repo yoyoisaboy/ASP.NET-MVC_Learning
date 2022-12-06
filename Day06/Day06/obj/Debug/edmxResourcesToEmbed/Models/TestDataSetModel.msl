@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="TestDataSetModelStoreContainer" CdmEntityContainer="TestDataSetEntities">
+    <EntitySetMapping Name="客戶">
+      <EntityTypeMapping TypeName="TestDataSetModel.客戶">
+        <MappingFragment StoreEntitySet="客戶">
+          <ScalarProperty Name="客戶編號" ColumnName="客戶編號" />
+          <ScalarProperty Name="公司名稱" ColumnName="公司名稱" />
+          <ScalarProperty Name="連絡人" ColumnName="連絡人" />
+          <ScalarProperty Name="連絡人職稱" ColumnName="連絡人職稱" />
+          <ScalarProperty Name="地址" ColumnName="地址" />
+          <ScalarProperty Name="城市" ColumnName="城市" />
+          <ScalarProperty Name="行政區" ColumnName="行政區" />
+          <ScalarProperty Name="郵遞區號" ColumnName="郵遞區號" />
+          <ScalarProperty Name="國家地區" ColumnName="國家地區" />
+          <ScalarProperty Name="電話" ColumnName="電話" />
+          <ScalarProperty Name="傳真電話" ColumnName="傳真電話" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="員工">
+      <EntityTypeMapping TypeName="TestDataSetModel.員工">
+        <MappingFragment StoreEntitySet="員工">
+          <ScalarProperty Name="員工編號" ColumnName="員工編號" />
+          <ScalarProperty Name="姓名" ColumnName="姓名" />
+          <ScalarProperty Name="名" ColumnName="名" />
+          <ScalarProperty Name="職稱" ColumnName="職稱" />
+          <ScalarProperty Name="稱呼" ColumnName="稱呼" />
+          <ScalarProperty Name="出生日期" ColumnName="出生日期" />
+          <ScalarProperty Name="雇用日期" ColumnName="雇用日期" />
+          <ScalarProperty Name="地址" ColumnName="地址" />
+          <ScalarProperty Name="城市" ColumnName="城市" />
+          <ScalarProperty Name="行政區" ColumnName="行政區" />
+          <ScalarProperty Name="區域號碼" ColumnName="區域號碼" />
+          <ScalarProperty Name="國家地區" ColumnName="國家地區" />
+          <ScalarProperty Name="電話號碼" ColumnName="電話號碼" />
+          <ScalarProperty Name="內部分機號碼" ColumnName="內部分機號碼" />
+          <ScalarProperty Name="相片" ColumnName="相片" />
+          <ScalarProperty Name="附註" ColumnName="附註" />
+          <ScalarProperty Name="主管" ColumnName="主管" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="產品資料">
+      <EntityTypeMapping TypeName="TestDataSetModel.產品資料">
+        <MappingFragment StoreEntitySet="產品資料">
+          <ScalarProperty Name="產品編號" ColumnName="產品編號" />
+          <ScalarProperty Name="產品" ColumnName="產品" />
+          <ScalarProperty Name="供應商編號" ColumnName="供應商編號" />
+          <ScalarProperty Name="類別編號" ColumnName="類別編號" />
+          <ScalarProperty Name="單位數量" ColumnName="單位數量" />
+          <ScalarProperty Name="單價" ColumnName="單價" />
+          <ScalarProperty Name="庫存量" ColumnName="庫存量" />
+          <ScalarProperty Name="已訂購量" ColumnName="已訂購量" />
+          <ScalarProperty Name="安全存量" ColumnName="安全存量" />
+          <ScalarProperty Name="不再銷售" ColumnName="不再銷售" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="產品類別">
+      <EntityTypeMapping TypeName="TestDataSetModel.產品類別">
+        <MappingFragment StoreEntitySet="產品類別">
+          <ScalarProperty Name="類別編號" ColumnName="類別編號" />
+          <ScalarProperty Name="類別名稱" ColumnName="類別名稱" />
+          <ScalarProperty Name="說明" ColumnName="說明" />
+          <ScalarProperty Name="圖片" ColumnName="圖片" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

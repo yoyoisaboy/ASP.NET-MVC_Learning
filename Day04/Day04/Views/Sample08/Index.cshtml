@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Day04.Models.Movie>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div class="container" style="margin-top:20px;">
+        <div class="row">
+            <p>
+                @{
+                    foreach (var item in Model)
+                    {
+                        @Myhelper.Display(item);
+                    }
+                }
+            </p>
+        </div>
+    </div>
+</body>
+</html>

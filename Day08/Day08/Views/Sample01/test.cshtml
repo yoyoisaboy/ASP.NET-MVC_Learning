@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+    @{
+        var db = Database.Open("Northwind");
+        var selectQueryString = "use Northwind; SELECT * FROM 產品類別";
+    }
+    <table>
+        <tr>
+            <th>1</th>
+            <th>2</th>
+        </tr>
+        @foreach (var row in db.Query(selectQueryString))
+        {
+    <tr>
+        <td>@row.類別編號</td>
+        <td>@row.類別名稱</td>
+    </tr>
+        }
+    </table>
+</body>
+</html>

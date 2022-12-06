@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Day09.Models.會員>
+
+@{
+    ViewBag.Title = "會員管理";
+}
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.帳號)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.密碼)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.角色)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.權限)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.帳號)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.密碼)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.角色)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.權限)
+        </td>
+        <td>
+            @Html.ActionLink("編輯", "Edit", new { userid = item.帳號 }, new { @class = "btn btn-success"}) 
+            @Html.ActionLink("刪除", "Delete", new { userid = item.帳號 }, new { @class = "btn btn-danger", onclick = "return confirm('確定刪除?');" }) 
+        </td>
+    </tr>
+}
+
+</table>

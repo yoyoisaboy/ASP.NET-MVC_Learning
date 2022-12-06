@@ -1,0 +1,16 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    <form enctype="multipart/form-data" method="post" action="@Url.Action("Create")">
+        <p>照片<input type="file" name="myfile" /></p>
+        <p><input type="submit" value="upload" /></p>
+    </form>
+</body>
+</html>

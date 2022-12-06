@@ -1,0 +1,12 @@
+﻿@model hackMD_MVCdemo.Models.tMember
+@{
+    ViewBag.Title = "修改";
+}
+<h2>修改</h2>
+<form method="post" action="@Url.Action("Edit")">
+    <input type="hidden" value="@Model.Id" name="Id" />
+    <p>姓名<input type="text" name="Name" value="@Model.Name" required class="form-control" /></p>
+    <p>電話<input type="text" name="Phone" value="@Model.Phone" required class="form-control" /></p>
+    <p>年齡<input type="number" name="Age" value="@Model.Age" required class="form-control" max="80" min="20" /></p>
+    <p><input type="submit" value="儲存" class="btn btn-danger" /></p>
+</form>

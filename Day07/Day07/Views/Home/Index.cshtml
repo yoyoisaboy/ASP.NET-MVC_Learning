@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Day07.Models.tEmployee>
+
+@{
+    ViewBag.Title = "員工列表";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("員工新增", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.fName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fSalary)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fPhone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fEmail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fEmpId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.fDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.fName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fSalary)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fPhone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fEmail)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fEmpId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fDate)
+        </td>
+        <td>
+            @Html.ActionLink("編輯", "Edit", new { fId=item.fId },new { @class="btn btn-success"}) |
+            
+            @Html.ActionLink("刪除", "Delete", new { fId=item.fId },new { @class="btn btn-danger",onclick="return confirm('確定要刪除嗎?')"})
+        </td>
+    </tr>
+}
+
+</table>

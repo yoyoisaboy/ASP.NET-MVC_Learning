@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="dbProductModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="產品資料">
+    <Key>
+      <PropertyRef Name="產品編號" />
+    </Key>
+    <Property Name="產品編號" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="品名" Type="nvarchar" MaxLength="50" />
+    <Property Name="單價" Type="int" />
+    <Property Name="圖示" Type="nvarchar" MaxLength="50" />
+    <Property Name="類別編號" Type="int" />
+    <Property Name="編輯者" Type="nvarchar" MaxLength="50" />
+    <Property Name="建立日" Type="nvarchar" MaxLength="50" />
+    <Property Name="修改日" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="產品類別">
+    <Key>
+      <PropertyRef Name="類別編號" />
+    </Key>
+    <Property Name="類別編號" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="類別名稱" Type="nvarchar" MaxLength="50" />
+    <Property Name="編輯者" Type="nvarchar" MaxLength="50" />
+    <Property Name="建立日" Type="nvarchar" MaxLength="50" />
+    <Property Name="修改日" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="會員">
+    <Key>
+      <PropertyRef Name="帳號" />
+    </Key>
+    <Property Name="帳號" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="密碼" Type="nvarchar" MaxLength="50" />
+    <Property Name="角色" Type="nvarchar" MaxLength="50" />
+    <Property Name="權限" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityContainer Name="dbProductModelStoreContainer">
+    <EntitySet Name="產品資料" EntityType="Self.產品資料" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="產品類別" EntityType="Self.產品類別" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="會員" EntityType="Self.會員" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

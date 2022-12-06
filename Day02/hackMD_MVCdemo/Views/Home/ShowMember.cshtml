@@ -1,0 +1,18 @@
+﻿@model IList<hackMD_MVCdemo.Models.CMember>
+@{Layout = null;}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ShowMember</title>
+</head>
+<body>
+    @foreach (var item in Model)
+    {
+        <div>
+            編號:@item.Id <br />
+            姓名:@item.Name
+        </div>
+    }
+</body>
+</html>

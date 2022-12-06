@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="dbProductModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="產品資料">
+          <Key>
+            <PropertyRef Name="產品編號" />
+          </Key>
+          <Property Name="產品編號" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="品名" Type="nvarchar" MaxLength="50" />
+          <Property Name="單價" Type="int" />
+          <Property Name="圖示" Type="nvarchar" MaxLength="50" />
+          <Property Name="類別編號" Type="int" />
+          <Property Name="編輯者" Type="nvarchar" MaxLength="50" />
+          <Property Name="建立日" Type="nvarchar" MaxLength="50" />
+          <Property Name="修改日" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="產品類別">
+          <Key>
+            <PropertyRef Name="類別編號" />
+          </Key>
+          <Property Name="類別編號" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="類別名稱" Type="nvarchar" MaxLength="50" />
+          <Property Name="編輯者" Type="nvarchar" MaxLength="50" />
+          <Property Name="建立日" Type="nvarchar" MaxLength="50" />
+          <Property Name="修改日" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="會員">
+          <Key>
+            <PropertyRef Name="帳號" />
+          </Key>
+          <Property Name="帳號" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="密碼" Type="nvarchar" MaxLength="50" />
+          <Property Name="角色" Type="nvarchar" MaxLength="50" />
+          <Property Name="權限" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityContainer Name="dbProductModelStoreContainer">
+          <EntitySet Name="產品資料" EntityType="Self.產品資料" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="產品類別" EntityType="Self.產品類別" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="會員" EntityType="Self.會員" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="dbProductModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="產品資料">
+          <Key>
+            <PropertyRef Name="產品編號" />
+          </Key>
+          <Property Name="產品編號" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="品名" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="單價" Type="Int32" />
+          <Property Name="圖示" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="類別編號" Type="Int32" />
+          <Property Name="編輯者" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="建立日" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="修改日" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="產品類別">
+          <Key>
+            <PropertyRef Name="類別編號" />
+          </Key>
+          <Property Name="類別編號" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="類別名稱" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="編輯者" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="建立日" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="修改日" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="會員">
+          <Key>
+            <PropertyRef Name="帳號" />
+          </Key>
+          <Property Name="帳號" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="密碼" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="角色" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="權限" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="dbProductEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="產品資料" EntityType="Self.產品資料" />
+          <EntitySet Name="產品類別" EntityType="Self.產品類別" />
+          <EntitySet Name="會員" EntityType="Self.會員" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="dbProductModelStoreContainer" CdmEntityContainer="dbProductEntities">
+          <EntitySetMapping Name="產品資料">
+            <EntityTypeMapping TypeName="dbProductModel.產品資料">
+              <MappingFragment StoreEntitySet="產品資料">
+                <ScalarProperty Name="產品編號" ColumnName="產品編號" />
+                <ScalarProperty Name="品名" ColumnName="品名" />
+                <ScalarProperty Name="單價" ColumnName="單價" />
+                <ScalarProperty Name="圖示" ColumnName="圖示" />
+                <ScalarProperty Name="類別編號" ColumnName="類別編號" />
+                <ScalarProperty Name="編輯者" ColumnName="編輯者" />
+                <ScalarProperty Name="建立日" ColumnName="建立日" />
+                <ScalarProperty Name="修改日" ColumnName="修改日" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="產品類別">
+            <EntityTypeMapping TypeName="dbProductModel.產品類別">
+              <MappingFragment StoreEntitySet="產品類別">
+                <ScalarProperty Name="類別編號" ColumnName="類別編號" />
+                <ScalarProperty Name="類別名稱" ColumnName="類別名稱" />
+                <ScalarProperty Name="編輯者" ColumnName="編輯者" />
+                <ScalarProperty Name="建立日" ColumnName="建立日" />
+                <ScalarProperty Name="修改日" ColumnName="修改日" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="會員">
+            <EntityTypeMapping TypeName="dbProductModel.會員">
+              <MappingFragment StoreEntitySet="會員">
+                <ScalarProperty Name="帳號" ColumnName="帳號" />
+                <ScalarProperty Name="密碼" ColumnName="密碼" />
+                <ScalarProperty Name="角色" ColumnName="角色" />
+                <ScalarProperty Name="權限" ColumnName="權限" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

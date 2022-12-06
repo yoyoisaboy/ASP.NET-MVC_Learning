@@ -1,0 +1,64 @@
+﻿@model Day09.Models.會員
+
+@{
+    ViewBag.Title = "會員新增";
+}
+
+<h2>會員新增</h2>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+       
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.帳號, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.帳號, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.帳號, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.密碼, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.密碼, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.密碼, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.角色, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.角色, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.角色, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.權限, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <label class="checkbox-inline">基本功能讀取</label>
+                <label class="checkbox-inline"><input type="checkbox" value="C" name="權限" />新增</label>
+                <label class="checkbox-inline"><input type="checkbox" value="U" name="權限" />修改</label>
+                <label class="checkbox-inline"><input type="checkbox" value="D" name="權限" />刪除</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="新增" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@if(ViewBag.IsMember != null)
+{
+    <div class="alert alert-danger">
+        <strong>此帳號有人使用</strong> 重新建立!!
+    </div> 
+}

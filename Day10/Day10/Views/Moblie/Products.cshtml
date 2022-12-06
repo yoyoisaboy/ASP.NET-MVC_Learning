@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Day10.Models.產品資料>
+@{
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+<h2>Products</h2>
+<div data-role="content">
+    @{
+        if (Model.Count() != 0)
+        {
+            <ul data-role="listview" data-inset="true">
+                <li data-role="list-divider"><span>@ViewBag.CategoryName</span>類專區</li>
+                @foreach (var item in Model)
+                {
+                    <li>
+                        <img src="~/Images/@item.圖示" />
+                        <h2>@item.品名</h2>
+                        <p>單價:@item.單價</p>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <h3>目前無<samp>@ViewBag.CategoryName</samp>的產品</h3>
+        }
+    }
+</div>

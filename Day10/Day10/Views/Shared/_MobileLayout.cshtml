@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>xxx公司</title>
+
+    <link href="~/Content/jquery.mobile-1.4.5.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.11.1.min.js"></script>
+    <script src="~/Scripts/jquery.mobile-1.4.5.min.js"></script>
+    
+</head>
+<body>
+    <div data-role="page" id="home">
+        <div data-role="header" data-position="fixed">
+            <h1>xxx公司</h1>
+        </div>
+        @RenderBody()
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="@Url.Action("index")">首頁</a></li>
+                    <li><a href="#about" data-rel="dialog">關於</a></li>
+                </ul>
+            </div>
+            <h1>xxx公司</h1>
+        </div>
+    </div>
+    <div data-role="page" id="about">
+        <div data-role="header"><h1>關於xx</h1></div>
+        <div data-role="content">
+            <h3>最優質、最快速、最貼心的服務</h3>
+            <p>粉專 : <a href="https://www.facebook.com/" data-ajax="false">FB</a></p>
+            <p>信箱 : <a href="123@gmail.com">123@gmail.com</a></p>
+            <p>電話 : <a href="tel:041234567">04-1234567</a></p>
+        </div>
+    </div>
+</body>
+</html>

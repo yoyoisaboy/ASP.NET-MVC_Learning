@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="NorthwindModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="產品資料">
+          <Key>
+            <PropertyRef Name="產品編號" />
+          </Key>
+          <Property Name="產品編號" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="產品" Type="nvarchar" MaxLength="40" Nullable="false" />
+          <Property Name="供應商編號" Type="int" />
+          <Property Name="類別編號" Type="int" />
+          <Property Name="單位數量" Type="nvarchar" MaxLength="20" />
+          <Property Name="單價" Type="money" />
+          <Property Name="庫存量" Type="smallint" />
+          <Property Name="已訂購量" Type="smallint" />
+          <Property Name="安全存量" Type="smallint" />
+          <Property Name="不再銷售" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="產品類別">
+          <Key>
+            <PropertyRef Name="類別編號" />
+          </Key>
+          <Property Name="類別編號" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="類別名稱" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="說明" Type="nvarchar(max)" />
+          <Property Name="圖片" Type="image" />
+        </EntityType>
+        <Association Name="FK_產品資料_產品類別">
+          <End Role="產品類別" Type="Self.產品類別" Multiplicity="0..1" />
+          <End Role="產品資料" Type="Self.產品資料" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="產品類別">
+              <PropertyRef Name="類別編號" />
+            </Principal>
+            <Dependent Role="產品資料">
+              <PropertyRef Name="類別編號" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="NorthwindModelStoreContainer">
+          <EntitySet Name="產品資料" EntityType="Self.產品資料" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="產品類別" EntityType="Self.產品類別" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_產品資料_產品類別" Association="Self.FK_產品資料_產品類別">
+            <End Role="產品類別" EntitySet="產品類別" />
+            <End Role="產品資料" EntitySet="產品資料" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NorthwindModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="產品資料">
+          <Key>
+            <PropertyRef Name="產品編號" />
+          </Key>
+          <Property Name="產品編號" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="產品" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="供應商編號" Type="Int32" />
+          <Property Name="類別編號" Type="Int32" />
+          <Property Name="單位數量" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="單價" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="庫存量" Type="Int16" />
+          <Property Name="已訂購量" Type="Int16" />
+          <Property Name="安全存量" Type="Int16" />
+          <Property Name="不再銷售" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="產品類別" Relationship="Self.FK_產品資料_產品類別" FromRole="產品資料" ToRole="產品類別" />
+        </EntityType>
+        <EntityType Name="產品類別">
+          <Key>
+            <PropertyRef Name="類別編號" />
+          </Key>
+          <Property Name="類別編號" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="類別名稱" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="說明" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="圖片" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="產品資料" Relationship="Self.FK_產品資料_產品類別" FromRole="產品類別" ToRole="產品資料" />
+        </EntityType>
+        <Association Name="FK_產品資料_產品類別">
+          <End Role="產品類別" Type="Self.產品類別" Multiplicity="0..1" />
+          <End Role="產品資料" Type="Self.產品資料" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="產品類別">
+              <PropertyRef Name="類別編號" />
+            </Principal>
+            <Dependent Role="產品資料">
+              <PropertyRef Name="類別編號" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="NorthwindEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="產品資料" EntityType="Self.產品資料" />
+          <EntitySet Name="產品類別" EntityType="Self.產品類別" />
+          <AssociationSet Name="FK_產品資料_產品類別" Association="Self.FK_產品資料_產品類別">
+            <End Role="產品類別" EntitySet="產品類別" />
+            <End Role="產品資料" EntitySet="產品資料" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NorthwindModelStoreContainer" CdmEntityContainer="NorthwindEntities">
+          <EntitySetMapping Name="產品資料">
+            <EntityTypeMapping TypeName="NorthwindModel.產品資料">
+              <MappingFragment StoreEntitySet="產品資料">
+                <ScalarProperty Name="產品編號" ColumnName="產品編號" />
+                <ScalarProperty Name="產品" ColumnName="產品" />
+                <ScalarProperty Name="供應商編號" ColumnName="供應商編號" />
+                <ScalarProperty Name="類別編號" ColumnName="類別編號" />
+                <ScalarProperty Name="單位數量" ColumnName="單位數量" />
+                <ScalarProperty Name="單價" ColumnName="單價" />
+                <ScalarProperty Name="庫存量" ColumnName="庫存量" />
+                <ScalarProperty Name="已訂購量" ColumnName="已訂購量" />
+                <ScalarProperty Name="安全存量" ColumnName="安全存量" />
+                <ScalarProperty Name="不再銷售" ColumnName="不再銷售" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="產品類別">
+            <EntityTypeMapping TypeName="NorthwindModel.產品類別">
+              <MappingFragment StoreEntitySet="產品類別">
+                <ScalarProperty Name="類別編號" ColumnName="類別編號" />
+                <ScalarProperty Name="類別名稱" ColumnName="類別名稱" />
+                <ScalarProperty Name="說明" ColumnName="說明" />
+                <ScalarProperty Name="圖片" ColumnName="圖片" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

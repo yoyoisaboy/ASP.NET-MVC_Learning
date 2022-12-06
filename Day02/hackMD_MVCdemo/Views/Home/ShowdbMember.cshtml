@@ -1,0 +1,27 @@
+﻿@model IList<hackMD_MVCdemo.Models.tMember>
+@{
+    ViewBag.Title = "會員清單";
+}
+<h2>ShowdbMember</h2>
+<table class="table">
+    <tr>
+        <td>編號</td>
+        <td>姓名</td>
+        <td>手機</td>
+        <td>年齡</td>
+        <td></td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.Name</td>
+            <td>@item.Phone</td>
+            <td>@item.Age</td>
+            <td>
+                <a href="@Url.Action("ShowEdit")?Id=@item.Id" class="btn btn-info">修改</a>
+                <a href="@Url.Action("Delete")?Id=@item.Id" onclick="return confirm('確定刪除?');" class="btn btn-danger">刪除</a>
+            </td>
+        </tr>
+    }
+</table>

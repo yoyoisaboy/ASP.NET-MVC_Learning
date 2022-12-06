@@ -1,0 +1,13 @@
+﻿@model Day04.Models.Movie
+
+<div class="col-12 col-md-4" style="margin-top:20px;">
+    <div class="img-thumbnail">
+        <iframe class="embed-responsive"
+                src="https://www.youtube.com/embed/@Model.Id"
+                frameborder="0" allow="autoplay:encrypted-media"
+                allowfullscreen></iframe>
+        <h4>@Model.Name</h4>
+        <a href="https://www.youtube.com/watch?v=@Model.Id"
+           target="_blank" class="btn btn-primary">瀏覽</a>
+    </div>
+</div>

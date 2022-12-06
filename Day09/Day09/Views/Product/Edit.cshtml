@@ -1,0 +1,83 @@
+﻿@using Day09.Models
+
+@model Day09.Models.產品資料
+
+@{
+    ViewBag.Title = "產品編輯";
+    IEnumerable<產品類別> category = ViewBag.Category;
+}
+
+<h2>產品編輯</h2>
+
+<form action="@Url.Action("Edit")" method="post" enctype="multipart/form-data">
+
+    <div class="form-horizontal">
+        <h4>產品資料</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.產品編號, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.產品編號, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                @Html.ValidationMessageFor(model => model.產品編號, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.品名, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.品名, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.品名, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.單價, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.單價, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.單價, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+           @Html.LabelFor(model => model.圖示,htmlAttributes:new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                <input type="file" id="fImg" name="fImg" class="form-control" />
+                @Html.HiddenFor(model => model.圖示)
+                @if(Model.圖示 == "question.png")
+            {
+                @:無產品圖
+            }
+            else
+            {
+                <img src="~/Images/@Model.圖示" style="width:150px;" />
+            }
+            </div>
+        
+        
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">類別名稱</label>
+            <div class="col-md-10">
+                <select id="類別編號" name="類別編號" class="form-control">
+                    @foreach (var item in category)
+                    {
+                        <option value="@item.類別編號" @(item.類別編號 == Model.類別編號?"selected":"")>
+                            @item.類別名稱
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="編輯" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+

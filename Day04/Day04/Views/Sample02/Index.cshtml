@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Day04.Models.Movie>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <style>
+        /*按鈕框*/
+        .link {
+            margin: 10px;
+            padding: 5px;
+            border-style: solid;
+            border-color: blue;
+            text-decoration: none;
+        }
+        /*滑鼠停留在按鈕背景*/
+        .link:hover {
+            background-color: #ebffb9;
+        }
+        /*影片橢圓框*/
+        iframe {
+            border-top-left-radius: 90px;
+            border-bottom-right-radius: 90px;
+            border-top-right-radius: 90px;
+            border-bottom-left-radius: 90px; 
+        }
+    </style>
+</head>
+<body> 
+    <p>
+        @{
+            int i = 0;
+            foreach (var item in Model)
+            {
+                <!--Url.Action:跑目前的控制器、link套用按鈕框、onmouse事件顯示名稱 -->
+                <a href="@Url.Action("Index")?episode=@i" class="link"
+                   onmouseover="fnMouseOver('@item.Name');"
+                   onmouseout="fnMouseOut();">
+                    第 @(i+1) 集
+                </a>
+                i++;
+            }
+        }
+        <span id="spanTitle"></span>
+    </p>
+    <iframe width="560" height="315"
+            src="https://www.youtube.com/embed/@ViewBag.MovieId"
+            frameborder="0"
+            allow="autoplay;encrypted-media"
+            allowfullscreen>
+    </iframe>
+    <script>
+        /*滑鼠停留在按鈕顯示影片名稱，塞名稱給id=spanTitle*/
+        function fnMouseOver(title) {
+            document.getElementById("spanTitle").innerHTML = title;
+        }
+        /*滑鼠離開按鈕，塞""給id=spanTitle*/
+        function fnMouseOut() {
+            document.getElementById("spanTitle").innerHTML = "";
+        }
+    </script>
+</body>
+</html>
