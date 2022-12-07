@@ -27,6 +27,22 @@
                 GA_dict["澳幣"].push(member["澳幣"]);
             });
             GA_name.forEach(function (member) {
+                //下拉式選單
+                $("#GA4_Select").append
+                (
+                    "<option value='GA4_"+count+"_show' >"+member+"</option>"
+                );
+                //長條圖
+                if (count > 1) {
+                    $("#divshow").append
+                    (
+                        "<div class='chart' id='GA4_" + count.toString() + "_show' style='display:none;'>" +
+                        "<h3 style='text-align:center; margin-bottom:20px;'>" + member + "長條圖</h3>" +
+                        "<canvas id='myChart_GA4_" + count.toString() + "' style='width:80%; max-height:90%' ></canvas>" +
+                        "</div>"
+                    );
+                }
+                
                 const data = {
                     labels: year_labels_arr,
                     datasets: [{
