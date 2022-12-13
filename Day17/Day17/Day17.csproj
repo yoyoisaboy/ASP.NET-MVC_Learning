@@ -104,13 +104,14 @@
     <Content Include="Models\dbMember.edmx.diagram">
       <DependentUpon>dbMember.edmx</DependentUpon>
     </Content>
+    <Content Include="Registration\Web.config" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="App_Data\dbmember.mdf" />
     <Content Include="App_Data\dbmember_log.ldf">
       <DependentUpon>dbmember.mdf</DependentUpon>
     </Content>
     <Content Include="frontlogin.aspx" />
-    <Content Include="frontRegister.aspx" />
+    <Content Include="Registration\frontRegister.aspx" />
     <Content Include="Index.aspx" />
     <Content Include="Models\dbMember.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -139,11 +140,11 @@
     <Compile Include="frontlogin.aspx.designer.cs">
       <DependentUpon>frontlogin.aspx</DependentUpon>
     </Compile>
-    <Compile Include="frontRegister.aspx.cs">
+    <Compile Include="Registration\frontRegister.aspx.cs">
       <DependentUpon>frontRegister.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="frontRegister.aspx.designer.cs">
+    <Compile Include="Registration\frontRegister.aspx.designer.cs">
       <DependentUpon>frontRegister.aspx</DependentUpon>
     </Compile>
     <Compile Include="Index.aspx.cs">

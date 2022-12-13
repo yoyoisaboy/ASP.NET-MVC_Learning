@@ -13,9 +13,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        
         <section class="headerBg">
-<%--            <div class="content container">--%>
             <div class="header">
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                   <div class="container-fluid">
@@ -24,9 +22,8 @@
                         <img class="logoImg" src="./assets/images/home.png" alt="Logo" width=10% height=10% />
                     </a>
                     <%--一般選單--%>
-                    <a class="nav-link login" href="./frontLogin.aspx">會員登入</a>
+                    <asp:LoginStatus ID="LoginStatus1" runat="server" class="nav-link logout" LoginText="" LogoutText="登出" OnLoggingOut="LoginStatus1_LoggingOut"/> 
                     <a class="nav-link login" href="./Index.aspx">會員編輯</a>
-
                   </div>
                 </nav>
             </div>

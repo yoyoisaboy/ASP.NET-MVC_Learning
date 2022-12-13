@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Web;
+using System.Web.Security;
 using Day17.Models;
 
 namespace Day17
 {
+    
     public partial class Index : System.Web.UI.Page
     {
         dbmemberEntities1 db = new dbmemberEntities1();
@@ -13,8 +16,8 @@ namespace Day17
         }
         protected void Button1_Click(object sender, EventArgs e)
         {
+
             Member member = new Member();
-          
             member.Account = TextBox1.Text;
             member.Password = Password1.Value;
 
