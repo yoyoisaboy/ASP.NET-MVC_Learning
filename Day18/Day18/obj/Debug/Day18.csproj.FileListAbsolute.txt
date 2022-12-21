@@ -77,3 +77,4 @@ D:\USER\Desktop\ASPMVC\Day18\Day18\bin\System.Buffers.xml
 D:\USER\Desktop\ASPMVC\Day18\Day18\bin\System.Memory.xml
 D:\USER\Desktop\ASPMVC\Day18\Day18\bin\System.Numerics.Vectors.xml
 D:\USER\Desktop\ASPMVC\Day18\Day18\bin\System.Runtime.CompilerServices.Unsafe.xml
+D:\USER\Desktop\ASPMVC\Day18\Day18\obj\Debug\Day18.csproj.AssemblyReference.cache

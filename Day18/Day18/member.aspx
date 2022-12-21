@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="member.aspx.cs" Inherits="Day18.member" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-    <% if (Session["permissions"].ToString().Contains("R"))
+    <% if (Session["permissions"]!=null && Session["permissions"].ToString().Contains("R"))
     {%>
         <%--會員文字 + 搜尋框--%>
         <div class="textTop ">

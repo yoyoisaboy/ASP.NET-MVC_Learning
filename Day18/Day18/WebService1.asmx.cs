@@ -10,6 +10,7 @@ using MySql.Data.MySqlClient;
 
 namespace Day18
 {
+
     /// <summary>
     ///WebService1 的摘要描述
     /// </summary>
@@ -82,56 +83,12 @@ namespace Day18
         }
         #endregion
         #region 取得會員各欄位資料
-        [WebMethod(EnableSession = true)]
-        public void GetMemberData(string id)
-        {
-            MySqlCommand Cmd = new MySqlCommand();
-            DataTable dt = new DataTable();
-            List<object> list = new List<object>();
-            var check_premissions = HttpContext.Current.Session["permissions"];
-            if (check_premissions!=null&&check_premissions.ToString().Contains("U") )
-            {
-                Cmd.Parameters.AddWithValue("@ID", id);
-                Cmd.CommandText = @"select * From tmember WHERE ID=@ID";
-                dt = dbCommand.GetTable(Cmd);
-                foreach (DataRow dr in dt.Rows)
-                {
-                    Dictionary<string, object> dict = new Dictionary<string, object>();
-                    dict = new Dictionary<string, object>();
-                    dict.Add("ID", dr["ID"].ToString());
-                    dict.Add("Account", dr["Account"].ToString());
-                    dict.Add("Name", dr["Name"].ToString());
-                    dict.Add("Permissions", dr["Permissions"].ToString());
-                    list.Add(dict);
-                }
-            }
-           
-            Context.Response.Write(new JavaScriptSerializer().Serialize(list));
-            Context.Response.End();
-        }
+
         #endregion
         #region 修改會員狀態
-        [WebMethod]
-        public void SetMemberState(string id, string state)
-        {
-            string mMsg = "";
-            MySqlCommand Cmd = new MySqlCommand();
-            Cmd.Parameters.AddWithValue("@Date", DateTime.Now.Date);
-            Cmd.Parameters.AddWithValue("@ID", id);
-            Cmd.Parameters.AddWithValue("@State", state);
-            Cmd.CommandText = @"UPDATE tmember SET State=@State WHERE ID=@ID";
-            try
-            {
-                if (dbCommand.ExecuteSQL(Cmd)) mMsg = "資料修改成功_success";
-                else mMsg = "fail";
-            }
-            catch { mMsg = "資料修改失敗_fail"; }
-            Context.Response.Write(new JavaScriptSerializer().Serialize(mMsg));
-            Context.Response.End();
-        }
         #endregion
 
-#endregion
+        #endregion
     }
 
 }

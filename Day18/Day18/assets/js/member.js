@@ -18,7 +18,6 @@ $(document).ready(function () {
         $("#hidGender").val(this.value);
     });
 });
-
 /** 抓取會員列表*/
 function GetData() {
     /*分頁功能(使用pagination套件)*/
@@ -64,8 +63,7 @@ function GetData() {
                         `<td class="editTd">
                             <a class="btn btn-outline-secondary" href="javascript:void(0);" onclick=openEdit('${item.ID}');> 編輯</a>
                             <a class="btn btn-danger" href="javascript:void(0);" onclick=openDelete('${item.ID}');>刪除</a>
-                         </td>
-                            
+                         </td> 
                         </tr>`;
                 memberTbody.innerHTML = str;
             });
@@ -92,79 +90,7 @@ function GetData() {
     });
 }
 /** 修改會員狀態*/
-function ChangeState(id, state) {
-    $.ajax({
-        type: "POST",
-        url: "/WebService1.asmx/SetMemberState",
-        contentType: 'application/x-www-form-urlencoded',
-        dataType: 'text',
-        data: {
-            id: id,
-            state: state
-        },
-        success: function (str) {
-            str = str.replace(/^\"|\"$/g, '');//去除string前后的双引号
-            $('#msgText').html(str);
-            $('#MsgModal').modal("show");
-        }, error: function (data) {
-            console.log('無法送出');
-        }
-    });
-}
+
 /** 抓取會員資料*/
-function openEdit(id) {
 
-    $.ajax({
-        type: 'POST',
-        url: "/WebService1.asmx/GetMemberData",
-        dataType: 'json',
-        data: {
-            id: id,
-        },
-        success: function (response) {
-            if (response.length != 0) {
-                response.forEach(function (item, index) {
-                    $('#hidID').val(`${item.ID}`);
-                    $('#txtID').val(`${item.ID}`);
-                    $('#txtName').val(`${item.Name}`);
-                    $('#txtAccount').val(`${item.Account}`);
-                    $("input[name=optionsRadios][value=" + `${item.Permissions}` + "]").prop('checked', 1);
-                    $('#hidPermissions').val(`${item.Permissions}`);
-                });
-                
-                $('#ItemModal').modal("show");
-            }
-            else {
-                alert("無權限");
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            if (navigator.notification)
-                navigator.notification.alert('GetData error,' + textStatus + ': ' + errorThrown, null, 'error');
-            else
-                alert('GetData error,' + textStatus + ': ' + errorThrown);
-        }
-    });
-
-}
 /** 刪除會員資料*/
-function openDelete(id) {
-    $.ajax({
-        type: 'POST',
-        url: "/WebService1.asmx/DeleteMember",
-        dataType: 'json',
-        data: {
-            id: id
-        },
-        success: function (response) {
-            
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            if (navigator.notification)
-                navigator.notification.alert('GetData error,' + textStatus + ': ' + errorThrown, null, 'error');
-            else
-                alert('Delete error,' + textStatus + ': ' + errorThrown);
-        }
-    });
-
-}
