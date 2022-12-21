@@ -1,0 +1,74 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="Day19.Site1" %>
+
+<!DOCTYPE html>
+
+<html lang="zh">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>yoyo會員平台 - <%: Page.Title %></title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <%---------------------------- 載入 CSS 區域 ----------------------------%>
+    <link href="https://pagination.js.org/dist/2.4.2/pagination.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"> 
+    
+    <%---------------------------- 載入 JS 區域 ----------------------------%>
+    <script src="Scripts/modernizr-2.8.3.js"></script>
+    <script src="Scripts/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+</head>
+<body>
+    <form id="form1" runat="server">
+        <section class="headerBg">
+            <div class="header">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                  <div class="container-fluid">
+                    <%--logo--%>
+                    <a class="navbar-brand logo" href="./index.aspx">
+                        <img class="logoImg" src="./assets/images/home.png" alt="Logo" width=10% height=10% />
+                    </a>
+                      <%--一般選單--%>
+                      <div class="navbar-nav">
+                          <% if (Session["userid"] == null)
+                           {%>
+                                <a class="nav-link login" href="./frontlogin.aspx">會員登入</a>
+                          <%}
+                              else
+                            {%>                            
+                          <% if (Session["permissions"] != null)
+                            {%>
+                                 <% if (Session["permissions"].ToString().Contains("C")){%>
+                                        <a class="nav-link login" href="./frontRegister.aspx">會員新增(註冊)</a>
+                                <%}%>
+                                <% if (Session["permissions"].ToString().Contains("R")){%>
+                                       <a href="./member.aspx" class="nav-link">會員編輯</a>
+                                <%}%>
+                             <%}%>
+                            <asp:LinkButton ID="LinkButton1" CssClass="nav-link login" runat="server" OnClick="LinkButton1_Click"><%=Session["username"] %>登出</asp:LinkButton>  
+                            <%}%>
+                      </div>
+                  </div>
+                </nav>
+            </div>
+        </section>
+        <%---------------------------- 主要內容 ----------------------------%>
+        <section class="contentBg">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+
+            </asp:ContentPlaceHolder>
+        </section>
+       <%---------------------------- footer 區域 ----------------------------%>
+        <section class="footerBg">
+           <footer class="content container text-center footer">
+             <p class="footerText">&copy; yoyo中心</p>
+           </footer>
+        </section>
+    </form>
+   
+  
+</body>
+</html>
