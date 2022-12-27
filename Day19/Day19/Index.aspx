@@ -10,7 +10,7 @@
             <a class="nav-link login" href="./member.aspx">會員清單</a>
 
             <% if (Session["permissions"].ToString().Contains('C')){%>
-                <a class="nav-link login" href="./member.aspx">會員新增</a>
+                <a class="nav-link login" href="./frontRegister.aspx">會員新增</a>
             <%}%>
         <%}%>  
          <% else{%>

@@ -29,7 +29,7 @@
                 success: function (response) {
                     response = response.replace(/^\"|\"$/g, '');       
                     if (response == "success") {
-                        location.href = "/index.aspx"
+                        location.href = "/index.aspx";
                     } else {
                         alert("登入失敗");
                     }

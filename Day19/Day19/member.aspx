@@ -32,16 +32,15 @@
                     </thead>
                     <tbody class="memberTbody">
                         <%-- 表單內容-表格 --%>
-
                     </tbody>
                 </table>
             </div>
-
             <%--分頁的頁碼--%>
             <div id="pagination-container"></div>
             <%--使用pagination套件--%>
         </div>
-        <!-- 訊息Modal -->
+        
+        <%-- 訊息Modal --%>
         <div class="modal fade" id="MsgModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -60,8 +59,8 @@
                 </div>
             </div>
         </div>
-        <!-- End訊息Modal -->
-        <!-- 編輯Modal -->
+        <%-- End訊息Modal --%>
+        <%-- 編輯Modal --%>
         <% if (Session["permissions"].ToString().Contains("U"))
         {%>
             <div class="modal fade" id="ItemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
@@ -104,7 +103,7 @@
                                                     廠商(CR)
                                                 </label>
                                                 <label class="form-check-label" style="margin-left: 40px;">
-                                                    <input type="radio" class="form-check-input" name="optionsRadios" id="U" value="CRUD">
+                                                    <input type="radio" class="form-check-input" name="optionsRadios" id="optStatus3" value="CRUD">
                                                     管理者(CRUD)
                                                 </label>
                                             </div>
@@ -121,18 +120,14 @@
                 </div>
             </div>
         <%}%>
-
-        <!-- End編輯Modal -->
+        <%-- End編輯Modal --%>
      <%}%>
      <% else{%>
         <a href="./frontlogin.aspx" class="nav-link">請先登入</a>
      <%}%>
-
-
     <%---------------------------- 載入 JS 區域 ----------------------------%>
     <%-- pagination.js套件 --%>
     <script src="https://pagination.js.org/dist/2.4.2/pagination.min.js"></script>
     <%--自己寫的 JS--%>
     <script src="./assets/js/member.js"></script>
-
 </asp:Content>

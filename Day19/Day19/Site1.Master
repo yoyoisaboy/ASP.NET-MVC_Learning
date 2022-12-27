@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>yoyo會員平台 - <%: Page.Title %></title>
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-
+    
     <%---------------------------- 載入 CSS 區域 ----------------------------%>
     <link href="https://pagination.js.org/dist/2.4.2/pagination.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"> 

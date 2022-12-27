@@ -25,7 +25,7 @@ namespace Day19
         {
             return "Hello World";
         }
-        #region 會員後台
+        #region member.js會員後台
         #region 登入會員
         [WebMethod(EnableSession = true)]
         public void LoginMember(string Account, string Password)
@@ -44,7 +44,7 @@ namespace Day19
                 HttpContext.Current.Session.Add("permissions", dt.Rows[0][3].ToString());
                 mMsg = "success";
             }
-            else mMsg = "fail";
+            else mMsg = "Login fail";
 
             Context.Response.Write(new JavaScriptSerializer().Serialize(mMsg));
             Context.Response.End();
@@ -97,7 +97,6 @@ namespace Day19
                 foreach (DataRow dr in dt.Rows)
                 {
                     Dictionary<string, object> dict = new Dictionary<string, object>();
-                    dict = new Dictionary<string, object>();
                     dict.Add("ID", dr["ID"].ToString());
                     dict.Add("Account", dr["Account"].ToString());
                     dict.Add("Name", dr["Name"].ToString());
@@ -105,13 +104,12 @@ namespace Day19
                     list.Add(dict);
                 }
             }
-
             Context.Response.Write(new JavaScriptSerializer().Serialize(list));
             Context.Response.End();
         }
         #endregion
         #region 修改會員狀態
-        [WebMethod]
+        [WebMethod(EnableSession = true)]
         public void SetMemberState(string id, int state)
         {
             string mMsg = "";
@@ -120,17 +118,109 @@ namespace Day19
             Cmd.Parameters.AddWithValue("@ID", id);
             Cmd.Parameters.AddWithValue("@State", state);
             Cmd.CommandText = @"UPDATE tmember SET State=@State WHERE ID=@ID";
-            try
+            var check_premissions = HttpContext.Current.Session["permissions"];
+            if (check_premissions != null && check_premissions.ToString().Contains("U"))
             {
-                if (dbCommand.ExecuteSQL(Cmd)) mMsg = "資料修改成功_success";
-                else mMsg = "fail";
+                try
+                {
+                    if (dbCommand.ExecuteSQL(Cmd)) mMsg = "資料修改成功";
+                    else mMsg = "Set fail";
+                }
+                catch { mMsg = "資料修改失敗"; }
             }
-            catch { mMsg = "資料修改失敗_fail"; }
+            else { mMsg = "資料修改失敗"; }
             Context.Response.Write(new JavaScriptSerializer().Serialize(mMsg));
             Context.Response.End();
         }
         #endregion
+        #region 修改會員資料
+        [WebMethod(EnableSession = true)]
+        public void MemberEdit()
+        {
+            string id = HttpContext.Current.Request.Params["hidID"];
+            string name = HttpContext.Current.Request.Params["txtName"];
+            string account = HttpContext.Current.Request.Params["txtAccount"];
+            string permissions = HttpContext.Current.Request.Params["hidPermissions"];
+            MySqlCommand Cmd = new MySqlCommand();
+            Cmd.Parameters.AddWithValue("@ID", id);
+            Cmd.Parameters.AddWithValue("@Name", name);
+            Cmd.Parameters.AddWithValue("@Account", account);
+            Cmd.Parameters.AddWithValue("@Permissions", permissions);
+            Cmd.CommandText = @"UPDATE tmember SET 
+                                Name=@Name,Account=@Account,Permissions=@Permissions 
+                                WHERE ID=@ID";
+            var check_premissions = HttpContext.Current.Session["permissions"];
+            if (check_premissions != null && check_premissions.ToString().Contains("U"))
+            {
+                try
+                {
+                    dbCommand.ExecuteSQL(Cmd);
+                }
+                catch { }
+            }
+        }
+        #endregion
+        #region 刪除會員
+        [WebMethod(EnableSession = true)]
+        public void DeleteMember(string id)
+        {
+            string mMsg = "";
+            MySqlCommand Cmd = new MySqlCommand();
+            Cmd.Parameters.AddWithValue("@ID", id);
+            Cmd.CommandText = @"DELETE FROM tmember  WHERE ID=@ID";
+            var check_premissions = HttpContext.Current.Session["permissions"];
+            if (check_premissions != null && check_premissions.ToString().Contains("D"))
+            {
+                try
+                {
+                    if (dbCommand.ExecuteSQL(Cmd)) mMsg = "資料刪除成功";
+                    else mMsg = "Delete fail";
+                }
+                catch { mMsg = "資料刪除失敗"; }
 
+            }
+            else { mMsg = "刪除失敗"; }
+            Context.Response.Write(new JavaScriptSerializer().Serialize(mMsg));
+            Context.Response.End();
+        }
+        #endregion
+        #endregion
+
+        #region frontRegister.js會員後台
+        #region 註冊會員
+        [WebMethod]
+        public void CreateMember(string account, string password, string name)
+        {
+            string mMsg = "";
+            MySqlCommand Cmd = new MySqlCommand();
+            DataTable dt = new DataTable();
+            Cmd.CommandText = @"SELECT * FROM tmember ";
+            Cmd.CommandText += @"ORDER BY ID DESC ";
+            dt = dbCommand.GetTable(Cmd);
+            var memberId = int.Parse(dt.Rows[0]["ID"].ToString());
+            mMsg = String.Format("{0:000000}", Convert.ToInt16(memberId + 1)); //最大ID+1
+
+            MySqlCommand Cmd2 = new MySqlCommand();
+            Cmd2.CommandText = @"INSERT INTO tmember(ID,Account,Password,Name,CreateTime,State) VALUES(@ID,@Account,@Password,@Name,@CreateTime,@State)";
+            Cmd2.Parameters.AddWithValue("@CreateTime", DateTime.Now.Date);
+            Cmd2.Parameters.AddWithValue("@ID", mMsg);
+            Cmd2.Parameters.AddWithValue("@Account", account);
+            Cmd2.Parameters.AddWithValue("@Password", password);
+            Cmd2.Parameters.AddWithValue("@Name", name);
+            Cmd2.Parameters.AddWithValue("@State", '1');
+            try
+            {
+                if(dbCommand.ExecuteSQL(Cmd2)) mMsg = "註冊成功";
+                else mMsg = "信箱已被註冊";
+            }
+            catch (Exception e) 
+            {
+                mMsg = "註冊失敗";
+            }
+            Context.Response.Write(new JavaScriptSerializer().Serialize(mMsg));
+            Context.Response.End();
+        }
+        #endregion
         #endregion
     }
 

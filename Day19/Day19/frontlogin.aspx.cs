@@ -13,5 +13,12 @@ namespace Day19
         {
 
         }
+        protected void LinkButton1_Click(object sender, EventArgs e)
+        {
+            Session.Remove("userid");
+            Session.Remove("username");
+            Session.Remove("permissions");
+            Response.Redirect("frontlogin.aspx");
+        }
     }
 }

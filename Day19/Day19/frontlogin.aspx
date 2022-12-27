@@ -1,6 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="frontlogin.aspx.cs" Inherits="Day19.frontlogin" %>
 
 <asp:Content ID="Content_Index" ContentPlaceHolderID="MainContent" runat="server">
+       
+    <% if (Session["permissions"]==null)
+    {%>
         <%---------------------------- 主要內容 ----------------------------%>
         <div class="contentFrontLogin container">    
             <div class="loginBox">
@@ -20,6 +23,10 @@
                 <p>不是會員?<a href="./frontRegister.aspx">立即註冊</a></p>
             </div>
         </div>
+    <%}%>
+    <% else{%>
+       <asp:LinkButton ID="LinkButton1" CssClass="nav-link login" runat="server" OnClick="LinkButton1_Click">已登入，登出</asp:LinkButton>  
+     <%}%>
     <script src="./assets/js/frontLogin.js"></script>
 </asp:Content>
 
