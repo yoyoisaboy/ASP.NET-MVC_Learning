@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Database1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="Database1Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="EcpayOrders" EntityType="Database1Model.EcpayOrders" />
+  </EntityContainer>
+  <EntityType Name="EcpayOrders">
+    <Key>
+      <PropertyRef Name="MerchantTradeNo" />
+    </Key>
+    <Property Name="MerchantTradeNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="MemberID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="RtnCode" Type="Int32" />
+    <Property Name="RtnMsg" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TradeNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TradeAmt" Type="Int32" />
+    <Property Name="PaymentDate" Type="DateTime" Precision="3" />
+    <Property Name="PaymentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PaymentTypeChargeFee" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TradeDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SimulatePaid" Type="Int32" />
+  </EntityType>
+</Schema>

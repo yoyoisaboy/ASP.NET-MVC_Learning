@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Database1ModelStoreContainer" CdmEntityContainer="Database1Entities">
+    <EntitySetMapping Name="EcpayOrders">
+      <EntityTypeMapping TypeName="Database1Model.EcpayOrders">
+        <MappingFragment StoreEntitySet="EcpayOrders">
+          <ScalarProperty Name="SimulatePaid" ColumnName="SimulatePaid" />
+          <ScalarProperty Name="TradeDate" ColumnName="TradeDate" />
+          <ScalarProperty Name="PaymentTypeChargeFee" ColumnName="PaymentTypeChargeFee" />
+          <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+          <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+          <ScalarProperty Name="TradeAmt" ColumnName="TradeAmt" />
+          <ScalarProperty Name="TradeNo" ColumnName="TradeNo" />
+          <ScalarProperty Name="RtnMsg" ColumnName="RtnMsg" />
+          <ScalarProperty Name="RtnCode" ColumnName="RtnCode" />
+          <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+          <ScalarProperty Name="MerchantTradeNo" ColumnName="MerchantTradeNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

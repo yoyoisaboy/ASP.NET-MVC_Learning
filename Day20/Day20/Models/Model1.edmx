@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Database1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="EcpayOrders">
+          <Key>
+            <PropertyRef Name="MerchantTradeNo" />
+          </Key>
+          <Property Name="MerchantTradeNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MemberID" Type="nvarchar" MaxLength="50" />
+          <Property Name="RtnCode" Type="int" />
+          <Property Name="RtnMsg" Type="nvarchar" MaxLength="50" />
+          <Property Name="TradeNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="TradeAmt" Type="int" />
+          <Property Name="PaymentDate" Type="datetime" />
+          <Property Name="PaymentType" Type="nvarchar" MaxLength="50" />
+          <Property Name="PaymentTypeChargeFee" Type="nvarchar" MaxLength="50" />
+          <Property Name="TradeDate" Type="nvarchar" MaxLength="50" />
+          <Property Name="SimulatePaid" Type="int" />
+        </EntityType>
+        <EntityContainer Name="Database1ModelStoreContainer">
+          <EntitySet Name="EcpayOrders" EntityType="Self.EcpayOrders" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Database1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Database1Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="EcpayOrders" EntityType="Database1Model.EcpayOrders" />
+        </EntityContainer>
+        <EntityType Name="EcpayOrders">
+          <Key>
+            <PropertyRef Name="MerchantTradeNo" />
+          </Key>
+          <Property Name="MerchantTradeNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MemberID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RtnCode" Type="Int32" />
+          <Property Name="RtnMsg" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TradeNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TradeAmt" Type="Int32" />
+          <Property Name="PaymentDate" Type="DateTime" Precision="3" />
+          <Property Name="PaymentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentTypeChargeFee" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TradeDate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SimulatePaid" Type="Int32" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Database1ModelStoreContainer" CdmEntityContainer="Database1Entities">
+          <EntitySetMapping Name="EcpayOrders">
+            <EntityTypeMapping TypeName="Database1Model.EcpayOrders">
+              <MappingFragment StoreEntitySet="EcpayOrders">
+                <ScalarProperty Name="SimulatePaid" ColumnName="SimulatePaid" />
+                <ScalarProperty Name="TradeDate" ColumnName="TradeDate" />
+                <ScalarProperty Name="PaymentTypeChargeFee" ColumnName="PaymentTypeChargeFee" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="TradeAmt" ColumnName="TradeAmt" />
+                <ScalarProperty Name="TradeNo" ColumnName="TradeNo" />
+                <ScalarProperty Name="RtnMsg" ColumnName="RtnMsg" />
+                <ScalarProperty Name="RtnCode" ColumnName="RtnCode" />
+                <ScalarProperty Name="MemberID" ColumnName="MemberID" />
+                <ScalarProperty Name="MerchantTradeNo" ColumnName="MerchantTradeNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

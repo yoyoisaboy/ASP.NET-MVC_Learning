@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Database1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="EcpayOrders">
+    <Key>
+      <PropertyRef Name="MerchantTradeNo" />
+    </Key>
+    <Property Name="MerchantTradeNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="MemberID" Type="nvarchar" MaxLength="50" />
+    <Property Name="RtnCode" Type="int" />
+    <Property Name="RtnMsg" Type="nvarchar" MaxLength="50" />
+    <Property Name="TradeNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="TradeAmt" Type="int" />
+    <Property Name="PaymentDate" Type="datetime" />
+    <Property Name="PaymentType" Type="nvarchar" MaxLength="50" />
+    <Property Name="PaymentTypeChargeFee" Type="nvarchar" MaxLength="50" />
+    <Property Name="TradeDate" Type="nvarchar" MaxLength="50" />
+    <Property Name="SimulatePaid" Type="int" />
+  </EntityType>
+  <EntityContainer Name="Database1ModelStoreContainer">
+    <EntitySet Name="EcpayOrders" EntityType="Self.EcpayOrders" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

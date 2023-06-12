@@ -1,0 +1,12 @@
+﻿@model System.Collections.Generic.Dictionary<string, string>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<body>
+    <!--step6 : 顯示回傳結果-->
+    @foreach (var key in @Model.Keys.ToList())
+    {
+        @(key) <input type="text" name="@key" value="@Model[key]" disabled /><br />
+    }
+</body>
+</html>
