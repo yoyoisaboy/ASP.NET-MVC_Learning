@@ -1,1119 +1,376 @@
-# ASP .NET MVC 上手 Day09(會員登入機制)
+# ASP .NET MVC 上手Day21(Session、Cookie?)第三方支付完後，會自動登出??
 
-###### tags: `asp.netMVC` `C#`
+###### tags: `asp.netMVC` `C#` `30日挑戰`
 
-因為功能之前都有講解過，所以此篇的程式碼不會做太多的解說。
-# 會員登入流程
+會使用到Session或Cookie的狀況，可以記得已登入的資訊、購物車內容、最近瀏覽...等等，會需要先將值暫時放在Session或Cookie的狀況。
 
-1. Authorize 驗證
-2. web.config 設定未登入時想導入的網頁
-3. FormsAuthentication.RedirectFormLoginPage(member.帳號,false); 視窗關閉後，Cookie自動失效
-4. 判斷登入狀態
----
-## 會員登入 HomeController.cs
+那我們就拿Day20一樣的例子(Ecpay)，特別的是我們送出後會進入Ecpay的網頁，操作完後才在跳回到我們的網站，看看用Session、Cookie來確定登入的狀況，以及第三方支付的方式跳轉回來後自動登出的問題~
+
+那一開始我們先來了解Session、Cookie
+
+## Session
+
+英文的解釋大致就知道意思，"具有狀態的一段期間"，記憶狀態發生了什麼事情
+
+***一種讓Request變成stateful的機制***
+
+
+* [stateful機制](https://medium.com/andy-blog/kubernetes-那些事-stateless-與stateful-2c68cebdd635)
+![](https://hackmd.io/_uploads/rJVw8BQ32.png)
+簡單來說就是每一次Request都會被記錄起來，以後還可以做存取，想像成類似資料庫
+
+
+在 Cookie 還沒出現以前，可以建立 Session，可以把狀態資訊放在網址上面或藏在 form 表單中
+
+## Cookie
+
+![](https://hackmd.io/_uploads/Bkqn3SXh2.png)
+
+把Request的狀態，用Cookie存起來(Set-Cookie)，有Cookie之後實作Session非常方便
+
+可看看這篇 : [白話 Session 與 Cookie：從經營雜貨店開始](https://hulitw.medium.com/session-and-cookie-15e47ed838bc)、[Cookie 和 Session 究竟是什麼？有什麼差別？](https://tw.alphacamp.co/blog/cookie-session-difference)
+
+本篇就來實作一下Session跟Cookie的用法
+
+### Cookie限制!!
+
+| Cookie | 限制 | 
+| -------- | -------- | 
+| 大小   | 單個4K     | 
+| 個數   | 一個domain下最多20個     |
+
+
+## 實作1 -> System.Web.Security.FormsAuthentication
+
+### 資料庫
+* 先來建立簡單的會員資料庫，本篇主要講Session、Cookie所以直接輸入帳號密碼
+![](https://hackmd.io/_uploads/B1_A_DQ32.png)
+
+### 設定有登入才看的到
+MVC CRUD 可以參考我[Day09](https://kroy1002.medium.com/asp-net-mvc-上手-day09-會員登入機制-940fb915ba0f)、[Day12](https://kroy1002.medium.com/asp-net-mvc-上手-day12-網路服務web-api-非同步會員管理系統-b2fbd3781f2d)、[Day17](https://kroy1002.medium.com/asp-net-web應用程式上手-net-framework-day-17-asp-net-framework內建的crud-bb418cccb2f1)的文章
+
+### Home1Controller.cs : login(string account, string password) 
 ```
-public class HomeController : Controller
+ //登入
+[HttpPost]
+public ActionResult login(string account, string password) 
 {
-    // GET: Home
-    public ActionResult Index()
+    Database1Entities1 db = new Database1Entities1();
+    var member = db.member.Where(m => m.account == account && m.password == password).FirstOrDefault(); //查詢
+    if (member != null)
     {
-
-        return View();
+        FormsAuthentication.RedirectFromLoginPage(member.account, true); //cookie驗證 : https://blog.miniasp.com/post/2008/02/20/Explain-Forms-Authentication-in-ASPNET-20
+        TempData["IsLogin"] = true;
+        return RedirectToAction("Buycart", "Home1"); //action, controller
     }
-
-    [HttpPost]
-    public ActionResult Index(string 帳號, string 密碼) //看cshtml中name的名稱
-    {
-        dbProductEntities db = new dbProductEntities();
-            var member = db.會員.Where(m => m.帳號 == 帳號 && m.密碼 == 密碼).FirstOrDefault(); //查詢
-            if (member != null)
-            {
-                FormsAuthentication.RedirectFromLoginPage(member.帳號, true); //驗證
-                return RedirectToAction("Index", "Category");
-            }
-            ViewBag.IsLogin = true;
-            return View();
-        }
-    }
-```
-## Index.cshtml 登入介面
-```
-@{
-    Layout = null;
-}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>會員登入</title>
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
-</head>
-<body>
-    <form action="@Url.Action("Index")" method="post">
-        <div class="container" style="margin-top:20px;">
-            <div class="row">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">會員登入</div>
-                    <div class="form-group">
-                        <label for="帳號 ">帳號 : </label>
-                        <input type="text" class="form-control" id="帳號" name="account" />
-                    </div>
-                    <div class="form-group">
-                        <label for="password">密碼 : </label>
-                        <input type="password" class="form-control" id="密碼" name="密碼" />
-                    </div>
-                    <input type="submit" value="登入" class="btn btn-primary" />
-                    @if(ViewBag.IsLogin != null)
-                    {
-                        <div class="alert alert-danger">
-                            <strong>密碼錯誤!</strong> 請重新登入
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </form>
-</body>
-</html>
-
-```
-## Web.config 的設定
-當沒有通過驗證，就是執行`loginUrl="~/Home/Index"`的動作方法
-```
-<system.web>
-    <compilation debug="true" targetFramework="4.7.2" />
-    <httpRuntime targetFramework="4.7.2" />
-    <authentication mode="Forms">
-          <forms loginUrl="~/Home/Index"></forms>
-    </authentication>
-</system.web>
-```
-
-
-# 共用錯誤訊息View設計
-## Controllers 中的 PermissionErrorMsgController.cs撰寫錯誤顯示
-```
-public class PermissionErrorMsgController : Controller
-{
-    [Authorize]
-    // GET: PermissionErrorMsg
-    public ActionResult Index(string msg)
-    {
-        ViewBag.ErrorMsg = msg;
-        return View();
-    }
-}
-```
-## 新增檢視 Index.cshtml
-```
-
-@{
-    ViewBag.Title = "權限錯誤";
-}
-
-<h2>權限錯誤</h2>
-
-<div class="alert alert-danger" >
-    <strong>權限錯誤</strong> @ViewBag.ErrorMsg
-
-
-</div>
-```
-之後如果權限不足，再傳直給PermissionErrorMsgController.cs的 Index中
-```
-return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "你算哪根蔥?敢點這功能?!" });
-```
-
-# 會員管理系統
-## Controller 中的MemberController.cs 撰寫登入的機制
-
-```
-using Day09.Models;
-...
-public class MemberController : Controller
-{
-    dbProductEntities db = new dbProductEntities();
-    // GET: Member
-    [Authorize]
-    public ActionResult Index()
-    {
-        //HttpContext.User 屬性
-        string uid = User.Identity.Name;
-        string role = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().角色;
-        if (role != "管理者")
-        {
-            return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "你算哪根蔥?敢點這功能?!" });
-        }
-        List<會員> members = new List<會員>();
-        foreach(var item in db.會員)
-        {
-            var member = new 會員();
-            member.帳號 = item.帳號;
-            member.密碼 = item.密碼; 
-            //判斷字元，改放中文
-            member.權限 = (item.權限.Contains("R") ? "讀取 " : "") +
-                          (item.權限.Contains("C") ? "新增 " : "") +
-                          (item.權限.Contains("U") ? "修改 " : "") +
-                          (item.權限.Contains("D") ? "刪除 " : "");
-            member.角色 = item.角色;
-            members.Add(member);
-
-        }
-        return View(members);
-    }
-}
-```
-
-## 檢視頁面 Index.cshtml
-
-List 範本、使用版面配置頁
-```
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.帳號)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.密碼)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.角色)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.權限)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.帳號)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.密碼)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.角色)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.權限)
-        </td>
-        <td>
-            @Html.ActionLink("編輯", "Edit", new { userid = item.帳號 }, new { @class = "btn btn-success"}) 
-            @Html.ActionLink("刪除", "Delete", new { userid = item.帳號 }, new { @class = "btn btn-danger", onclick = "return confirm('確定刪除?');" }) 
-        </td>
-    </tr>
-}
-
-</table>
-```
-:::success
-HttpContext.User 屬性 : [詳細內容](https://docs.microsoft.com/zh-tw/dotnet/api/system.web.httpcontext.user?view=netframework-4.8)
-:::
-
-
-## 登入非管理者
-![](https://i.imgur.com/JXT4Rpm.png)
-## 登入管理者
-![](https://i.imgur.com/lWMKQcp.png)
-
----
-
-## Create
-一樣會需要有 Authorize 來判斷是否登入、role 判斷權限
-```
-[Authorize]
-public ActionResult Create()
-{
-    string uid = User.Identity.Name;
-    string role = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().角色;
-    if (role != "管理者")
-    {
-        return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "你算哪根蔥?敢點這功能?!" });
-    }
-
+    ViewBag.IsLogin = true;                                          //https://stackoverflow.com/questions/34447310/any-reason-why-my-viewbag-is-not-working
     return View();
 }
-[Authorize]
-[HttpPost]
-public ActionResult Create(string 帳號,string 密碼,string 角色,string[] 權限)
-{
-    string userid = 帳號;
-    var tempMember = db.會員.Where(m => m.帳號 == userid).FirstOrDefault();
-    if(tempMember != null)
-    {
-        ViewBag.IsMember = true;
-        return View();
-    }
-    string Permission = "R";
-    for (int i = 0; i < 權限.Length; i++)
-    {
-        Permission += 權限[i];
-    }
-    會員 member = new 會員();
-    member.帳號 = 帳號;
-    member.密碼 = 密碼;
-    member.角色 = 角色;
-    member.權限 = Permission;
-    db.會員.Add(member);
-    db.SaveChanges();
-    return RedirectToAction("Index");
-}
 ```
-## 新增檢視Create.cshtml
-![](https://i.imgur.com/9cU9iLu.png)
+* 接收 account 和 password
+* 用 LINQ 到資料庫查有無資料
 
+> 補充
+> * FormsAuthentication.RedirectFromLoginPage 簡單來說就是在cookie塞值[[更多介紹!!](https://blog.miniasp.com/post/2008/02/20/Explain-Forms-Authentication-in-ASPNET-20)]
+> ```
+> <system.web>
+>     <authentication mode="Forms">
+>       <forms loginUrl="~/Home1/login"></forms>
+>     </authentication>
+> </system.web>
+> ```
+> ![](https://hackmd.io/_uploads/HJ3S59_n2.png)
+> * ViewBag 重新整理會不見
+> * [ASP.NET Form 驗證 .ASPXAUTH Cookie 行為深入觀察](https://blog.darkthread.net/blog/aspxauth-cookie-timeout/)
+
+### Views -> login.cshtml的 form
 ```
-@model Day09.Models.會員
-
-@{
-    ViewBag.Title = "會員新增";
-}
-
-<h2>會員新增</h2>
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-       
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.帳號, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.帳號, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.帳號, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.密碼, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.密碼, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.密碼, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.角色, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.角色, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.角色, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.權限, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <label class="checkbox-inline">基本功能讀取</label>
-                <label class="checkbox-inline"><input type="checkbox" value="C" name="權限" />新增</label>
-                <label class="checkbox-inline"><input type="checkbox" value="U" name="權限" />修改</label>
-                <label class="checkbox-inline"><input type="checkbox" value="D" name="權限" />刪除</label>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="新增" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
-
-@if(ViewBag.IsMember != null)
-{
-    <div class="alert alert-danger">
-        <strong>此帳號有人使用</strong> 重新建立!!
-    </div> 
-}
-
-```
----
-
-## Delete
-
-```
-[Authorize]
-public ActionResult Delete(string userid)
-{
-    string uid = User.Identity.Name;
-    string role = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().角色;
-    if (role != "管理者")
-    {
-        return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "你算哪根蔥?敢點這功能?!" });
-    }
-    var member = db.會員.Where(m => m.帳號 == userid).FirstOrDefault();
-    db.會員.Remove(member);
-    db.SaveChanges();
-    return RedirectToAction("Index");
-}
-```
-
----
-
-## Edit
-
-```
-[Authorize]
-public ActionResult Edit(string userid)
-{
-    string uid = User.Identity.Name;
-    string role = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().角色;
-    if (role != "管理者")
-    {
-        return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "你算哪根蔥?敢點這功能?!" });
-    }
-    var member = db.會員.Where(m => m.帳號 == userid).FirstOrDefault();
-    return View(member);
-}
-
-[Authorize]
-[HttpPost]
-public ActionResult Edit(string 帳號,string 密碼,string 角色,string[] 權限)
-{
-    string Permission = "R";
-    if (權限 != null)
-    {
-        for(int i =0; i < 權限.Length; i++)
-        {
-            Permission += 權限[i];
-        }
-    }
-    var member = db.會員.Where(m => m.帳號 == 帳號).FirstOrDefault();
-    member.密碼 = 密碼;
-    member.角色 = 角色;
-    member.權限 = Permission;
-    db.SaveChanges();
-    return RedirectToAction("Index");
-}
-```
-## 新增檢視 Edit.cshtml
-
-* 一樣把權限的地方改成勾選的
-* @readonly = "readonly" -> 防止帳號更改
-```
-@model Day09.Models.會員
-
-@{
-    ViewBag.Title = "會員編輯";
-}
-
-<h2>會員編輯</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.帳號, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.帳號, new { htmlAttributes = new { @class = "form-control" ,@readonly = "readonly"} })
-                @Html.ValidationMessageFor(model => model.帳號, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.密碼, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.密碼, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.密碼, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.角色, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.角色, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.角色, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.權限, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="col-md-10">
-                    <label class="checkbox-inline">基本功能讀取</label>
-                    <label class="checkbox-inline"><input type="checkbox" value="C" name="權限" @(Model.權限.Contains("C") ? "checked" : "")>新增</label>
-                    <label class="checkbox-inline"><input type="checkbox" value="U" name="權限" @(Model.權限.Contains("U") ? "checked" : "")>修改</label>
-                    <label class="checkbox-inline"><input type="checkbox" value="D" name="權限" @(Model.權限.Contains("D") ? "checked" : "")>刪除</label>
+<form action="@Url.Action("login")" method="post">
+    <div class="container" style="margin-top:20px;">
+        <div class="row">
+            <div class="panel panel-primary">
+                <div class="panel-heading">會員登入</div>
+                <div class="form-group">
+                    <label for="account ">帳號 : </label>
+                    <input type="text" class="form-control" id="account" name="account" />
                 </div>
-            </div>
-         </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="編輯" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-```
-
-# 產品類別管理
-
-一樣有新增、修改、刪除、編輯，把所有的tabel改成產品類別 ，其他都差不多
-
-## 變動時間 在Models中定義 Sys.cs ， 標準化時間格式
-```
-public static string StringConverDateTimeString(string str)
-{
-    if(str == "" || str == null || str.Length != 14) { return ""; }
-    return
-        str.Substring(0, 4) + "年" + str.Substring(4, 2) + "月" +
-        str.Substring(6, 2) + "日" + str.Substring(8, 2) + "時" +
-        str.Substring(10, 2) + "分" + str.Substring(12, 2) + "秒";
-}
-```
-
-
-## 產品類別新增、修改、刪除、編輯
-```
-public class CategoryController : Controller
-{
-    dbProductEntities db = new dbProductEntities();
-    // GET: Category
-    [Authorize]
-    public ActionResult Index()
-    {
-        string uid = User.Identity.Name;
-        string Permission = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().權限;
-        ViewBag.Permission = Permission;
-
-        List<產品類別> category = new List<產品類別>();
-        foreach(var item in db.產品類別.OrderByDescending(m => m.修改日))
-        {
-            category.Add(new 產品類別()
-            {
-                類別編號 = item.類別編號,
-                類別名稱 = item.類別名稱,
-                編輯者 = item.編輯者,
-                修改日 = Sys.StringConverDateTimeString(item.修改日),
-                建立日 = Sys.StringConverDateTimeString(item.建立日)
-            });
-        }
-        return View(category);
-    }
-
-    [Authorize]
-    public ActionResult Create()
-    {
-        string uid = User.Identity.Name;
-        string Permission = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().權限;
-        if (!Permission.Contains("C"))
-        {
-            return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "權限不足" });
-
-        }
-        return View();
-    }
-    [Authorize]
-    [HttpPost]
-    public ActionResult Create(string 類別名稱)
-    {
-        var tempProduct = db.產品類別.Where(m => m.類別名稱 == 類別名稱).FirstOrDefault();
-        if (tempProduct != null)
-        {
-            ViewBag.IsProduct = true;
-            return View();
-        }
-
-        string editdate = DateTime.Now.ToString("yyyyMMddHHmmss");
-
-        產品類別 category = new 產品類別();
-        category.類別名稱 = 類別名稱;
-        category.編輯者 = User.Identity.Name;
-        category.建立日 = editdate;
-        category.修改日 = editdate;
-        db.產品類別.Add(category);
-        db.SaveChanges();
-        return RedirectToAction("Index");
-    }
-
-    [Authorize]
-    public ActionResult Delete(int cid)
-    {
-        string uid = User.Identity.Name;
-        string Permission = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().權限;
-        if (!Permission.Contains("D"))
-        {
-            return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "權限不足" });
-        }
-        var products = db.產品資料.Where(m => m.類別編號 == cid).ToList();
-        var category = db.產品類別.Where(m => m.類別編號 == cid).FirstOrDefault();
-        db.產品資料.RemoveRange(products);
-        db.產品類別.Remove(category);
-        db.SaveChanges();
-        return RedirectToAction("Index");
-    }
-
-    [Authorize]
-    public ActionResult Edit(int cid)
-    {
-        string uid = User.Identity.Name;
-        string Permission = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().權限;
-        if (!Permission.Contains("D"))
-        {
-            return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "權限不足" });
-        }
-        var category = db.產品類別.Where(m => m.類別編號 == cid).FirstOrDefault();
-        return View(category);
-    }
-    [Authorize]
-    [HttpPost]
-    public ActionResult Edit(int 類別編號,string 類別名稱)
-    {
-        string editdate = DateTime.Now.ToString("yyyyMMddHHmmss");
-        var category = db.產品類別.Where(m => m.類別編號 == 類別編號).FirstOrDefault();
-        category.類別名稱 = 類別名稱;
-        category.編輯者 = User.Identity.Name;
-        category.修改日 = editdate;
-        db.SaveChanges();
-        return RedirectToAction("Index");
-    }
-
-}
-```
-
-## Create.cshtml
-```
-@model Day09.Models.產品類別
-
-@{
-    ViewBag.Title = "產品類別新增";
-}
-
-<h2>產品類別新增</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-
-        <hr />
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.類別名稱, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.類別名稱, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.類別名稱, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="新增" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
-
-@if (ViewBag.IsProduct != null)
-{
-    <div class="alert alert-danger">
-        <strong>已有此類別!</strong> 重新建立!!
-    </div>
-}
-```
-## Edit.cshtml
-```
-@model Day09.Models.產品類別
-
-@{
-    ViewBag.Title = "類別編輯";
-}
-
-<h2>類別編輯</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.類別編號, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.類別編號, new { htmlAttributes = new { @class = "form-control" ,@readonly = "readonly"} })
-                @Html.ValidationMessageFor(model => model.類別編號, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.類別名稱, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.類別名稱, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.類別名稱, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-```
----
-
-# 產品資料管理
-* 這比較不一樣的是會用到"產品資料"和"產品類別"的table，所以會先定義兩邊的資料封裝
-## Models 中 產品類別產品資料ViewModel.cs
-```
-public class 產品類別產品資料ViewModel
-{
-    public List<產品類別> Category { get; set; }
-    public List<產品資料> Product { get; set; }
-}
-```
-## ProductController.cs 的Index顯示頁
-```
-public class ProductController : Controller
-{
-    dbProductEntities db = new dbProductEntities();
-    // GET: Product
-    [Authorize]
-    public ActionResult Index(int cid = 1)
-    {
-        string uid = User.Identity.Name;
-        string Permission = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().權限;
-        ViewBag.Permission = Permission;
-
-        產品類別產品資料ViewModel vm = new 產品類別產品資料ViewModel();
-        vm.Category = db.產品類別.OrderByDescending(m => m.修改日).ToList();
-        var tempProduct = db.產品資料.Where(m => m.類別編號 == cid).OrderByDescending(m => m.修改日).ToList();
-
-        List<產品資料> product = new List<產品資料>();
-        foreach(var item in tempProduct)
-        {
-            product.Add(new 產品資料()
-            {
-                產品編號 = item.產品編號,
-                品名 = item.品名,
-                單價 = item.單價,
-                圖示 = item.圖示,
-                類別編號 = item.類別編號,
-                編輯者 = item.編輯者,
-                修改日 = Sys.StringConverDateTimeString(item.修改日),
-                建立日 = Sys.StringConverDateTimeString(item.建立日)
-            });
-        }
-        vm.Product = product;
-        return View(vm);
-    }
-}
-```
-
-## Index.cshtml
-顯示清單，可不可以編輯&刪除是根據登入者的權限來判斷` ViewBag.Permission = Permission;`用這段來傳到前端判斷。
-
-```
-@model Day09.Models.產品類別產品資料ViewModel
-@{
-    ViewBag.Title = "產品列表";
-    string Permission = ViewBag.Permission.ToString();
-}
-
-<div>產品列表</div>
-<div class="row">
-    <div class="col-sm-2">
-        @foreach(var item in Model.Category)
-            {
-                <p>@Html.ActionLink(item.類別名稱,"Index",new { cid = item.類別編號})</p>
-            }
-    </div>
-    <div class="col-sm-10">
-
-        <table class="table">
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().產品編號)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().品名)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().單價)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().圖示)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().編輯者)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().建立日)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Product.FirstOrDefault().修改日)
-                </th>
-                <th></th>
-            </tr>
-
-            @foreach (var item in Model.Product)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.產品編號)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.品名)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.單價)
-                    </td>
-                    <td>
-                        <img src="~/Images/@item.圖示" style="width:120px;" />
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.編輯者)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.建立日)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.修改日)
-                    </td>
-                    <td>
-                       @if (Permission.Contains("U"))
-                        {
-                           @Html.ActionLink("編輯", "Edit", new {pid = item.產品編號 }, new {@class = "btn btn-success"})
-                        }
-                       <p></p>
-                        @if (Permission.Contains("D"))
-                        {
-                            @Html.ActionLink("刪除", "Delete", new { pid = item.產品編號 }, new {@class="btn btn-danger",onclick="return confirm('確定刪除?');"})
-
-                        }
-                    </td>
-                </tr>
-            }
-
-        </table>
-
-    </div>
-</div>
-
-```
-## ProductController.cs 的 Create新增頁面
-有多做防呆的機制，多`ViewBag.IsProduct = true;`來判斷有沒有重複新增。
-```
-[Authorize]
-public ActionResult Create()
-{
-    string uid = User.Identity.Name;
-    string Permission = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().權限;
-    if (!Permission.Contains("C"))
-    {
-        return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "身分不足" });
-
-    }
-    ViewBag.Category = db.產品類別.ToList();
-    return View();
-}
-[Authorize]
-[HttpPost]
-public ActionResult Create(string 產品編號, string 品名, int 單價, HttpPostedFileBase fImg,int 類別編號)
-{
-    var tempProduct = db.產品資料.Where(m => m.產品編號 == 產品編號).FirstOrDefault();
-    if (tempProduct != null)
-    {
-        ViewBag.IsProduct = true;
-        ViewBag.Category = db.產品類別.ToList();
-        return View();
-    }
-
-
-    string fileName = "question.png";
-    if (fImg != null)
-    {
-        if (fImg.ContentLength > 0)
-        {
-            fileName = Guid.NewGuid().ToString() + ".jpg";
-            var path = string.Format("{0}/{1}", Server.MapPath("~/Images"), fileName);
-            fImg.SaveAs(path);
-        }
-    }
-
-    string editdate = DateTime.Now.ToString("yyyyMMddHHmmss");
-    產品資料 product = new 產品資料();
-    product.產品編號 = 產品編號;
-    product.品名 = 品名;
-    product.單價 = 單價;
-    product.圖示 = fileName;
-    product.類別編號 = 類別編號;
-    product.編輯者 = User.Identity.Name;
-    product.建立日 = editdate;
-    product.修改日 = editdate;
-    db.產品資料.Add(product);
-    db.SaveChanges();
-    return RedirectToAction("Index");
-}
-```
-## Create.cshtml
-```
-@using Day09.Models
-
-@model Day09.Models.產品資料
-
-@{
-    ViewBag.Title = "產品新增";
-    IEnumerable<產品類別> category = ViewBag.Category;
-}
-
-<h2>產品新增</h2>
-
-<form action="@Url.Action("Create")" method="post" enctype="multipart/form-data">
-
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.產品編號, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.產品編號, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.產品編號, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.品名, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.品名, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.品名, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.單價, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.單價, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.單價, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.圖示, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <input type="file" id="fImg" name="fImg" class="form-control" />
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2">
-                類別名稱
-            </label>
-            <div class="col-md-10">
-                <select id="類別編號" name="類別編號" class="form-control">
-                    @foreach (var item in category)
-                    {
-                        <option value="@item.類別編號">@item.類別名稱</option>
-                    }
-                </select>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="新增" class="btn btn-default" />
+                <div class="form-group">
+                    <label for="password">密碼 : </label>
+                    <input type="password" class="form-control" id="password" name="password" />
+                </div>
+                <input type="submit" value="登入" class="btn btn-primary" />
+                @if (ViewBag.IsLogin != null)
+                {
+                    <div class="alert alert-danger">
+                        <strong>密碼錯誤!</strong> 請重新登入
+                    </div>
+                }
             </div>
         </div>
     </div>
 </form>
-
-@if (ViewBag.IsProduct != null)
-{
-    <div class="alert alert-danger">
-        <strong>產品編輯不能重複！</strong> 誰重新建立！！
-    </div>
-}
-
 ```
-## ProductController.cs 的 Delete 刪除功能
-這邊使用`System.IO.File.Delete` 來刪除圖片檔案。
+* @Url.Action("login") post 到後端
+* ViewBag.IsLogin == true 才可登入
 
+### Home1Controller.cs : Buycart
 ```
+//登入後進
 [Authorize]
-public ActionResult Delete(string pid)
+public ActionResult Buycart()
+{ 
+    ViewBag.IsLogin = TempData["IsLogin"];                               //RedirectToAction : Home收不到Index的ViewBag，TempData 會將值存在seesin 。https://www.codeproject.com/Articles/476967/What-is-ViewData-ViewBag-and-TempData-MVC-Option-2
+    var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
+    var website = $"https://localhost:44354/"; //記得確認一下數字有沒有一樣
+    var order = new Dictionary<string, string>
+    {
+        { "MerchantTradeNo",  orderId},
+        { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
+        { "TotalAmount",  "100"},
+        { "TradeDesc",  "無"},
+        { "ItemName",  "測試商品"},
+        { "ExpireDate",  "3"},
+        { "CustomField1",  ""},
+        { "CustomField2",  ""},
+        { "CustomField3",  ""},
+        { "CustomField4",  ""},
+        { "ReturnURL",  $"{website}/api/Ecpay/AddPayInfo"},
+        { "OrderResultURL", $"{website}/Home/PayInfo/{orderId}"},
+        { "PaymentInfoURL",  $"{website}/api/Ecpay/AddAccountInfo"},
+        { "ClientRedirectURL",  $"{website}/Home/AccountInfo/{orderId}"},
+        { "MerchantID",  "2000132"},
+        { "IgnorePayment",  "GooglePay#WebATM#CVS#BARCODE"},
+        { "PaymentType",  "aio"},
+        { "ChoosePayment",  "ALL"},
+        { "EncryptType",  "1"},
+    };
+    order["CheckMacValue"] = GetCheckMacValue(order);
+    return View(order);
+}
+private string GetCheckMacValue(Dictionary<string, string> order)
 {
-    string uid = User.Identity.Name;
-    string Permission = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().權限;
-    if (!Permission.Contains("C"))
+    var param = order.Keys.OrderBy(x => x).Select(key => key + "=" + order[key]).ToList();
+    var checkValue = string.Join("&", param);
+    //測試用的 HashKey
+    var hashKey = "5294y06JbISpM5x9";
+    //測試用的 HashIV
+    var HashIV = "v77hoKGq4kWxNNIS";
+    checkValue = $"HashKey={hashKey}" + "&" + checkValue + $"&HashIV={HashIV}";
+    checkValue = HttpUtility.UrlEncode(checkValue).ToLower();
+    checkValue = GetSHA256(checkValue);
+    return checkValue.ToUpper();
+}
+private string GetSHA256(string value)
+{
+    var result = new StringBuilder();
+    var sha256 = SHA256Managed.Create();
+    var bts = Encoding.UTF8.GetBytes(value);
+    var hash = sha256.ComputeHash(bts);
+    for (int i = 0; i < hash.Length; i++)
     {
-        return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "身分不足" });
-
+        result.Append(hash[i].ToString("X2"));
     }
-    var product = db.產品資料.Where(m => m.產品編號 == pid).FirstOrDefault();
-    var filename = product.圖示;
-    if(filename != "question.png")
-    {
-        System.IO.File.Delete(string.Format("{0}/{1}", Server.MapPath("~/Images"), filename) );
-    }
+    return result.ToString();
+}
+```
+這裡就是登入才能進入的頁面，除非登出。
 
-    db.產品資料.Remove(product);
-    db.SaveChanges();
+### Views -> Shared -> _Layout.cshtml
+母框加登出
+```
+<div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+        <li>@Html.ActionLink("登出", "Index_logout", "Home")</li>
+    </ul>
+</div>
+```
+
+### Home1Controller -> Index_logout 
+登出
+```
+public ActionResult Index_logout()
+{
+    FormsAuthentication.SignOut(); //清除cookie
     return RedirectToAction("Index");
 }
 ```
 
-## ProductController.cs 中的 Edit編輯頁
-* `Guid.NewGuid()` 產生亂數字串
+### Home1Controller -> PayInfo(FormCollection id)
+綠界回傳
 ```
-[Authorize]
-public ActionResult Edit(string pid)
-{
-    string uid = User.Identity.Name;
-    string Permission = db.會員.Where(m => m.帳號 == uid).FirstOrDefault().權限;
-    if (!Permission.Contains("U"))
-    {
-        return RedirectToAction("Index", "PermissionErrorMsg", new { msg = "身分不足" });
-
-    }
-    var product = db.產品資料.Where(m => m.產品編號 == pid).FirstOrDefault();
-    ViewBag.Category = db.產品類別.ToList();
-    return View(product);
-}
-[Authorize]
 [HttpPost]
-public ActionResult Edit(string 產品編號, string 品名, int 單價, HttpPostedFileBase fImg,string 圖示, int 類別編號)
+//[Authorize] //會出問題QQ
+public ActionResult PayInfo(FormCollection id)
 {
-    string fileName = "";
-    var product = db.產品資料.Where(m => m.產品編號 == 產品編號).FirstOrDefault();
-
-    if (fImg != null)
+    var data = new Dictionary<string, string>();
+    foreach (string key in id.Keys)
     {
-        if (fImg.ContentLength > 0)
-        {
-            fileName = Guid.NewGuid().ToString() + ".jpg";
-            var path = string.Format("{0}/{1}", Server.MapPath("~/Images"), fileName);
-            fImg.SaveAs(path);
-            System.IO.File.Delete(string.Format("{0}/{1}", Server.MapPath("~/Images"), product.圖示));
-        }
+        data.Add(key, id[key]);
+    }
+    return View("EcpayView", data);
+}
+```
+
+### 發現綠界回傳後會沒登入
+ 
+如果在 PayInfo 上面多加 [Authorize] ，綠界跳回來 ViewBag 就會被洗掉，然後變成自動登出了。
+
+從網址可以知道，這是沒登入想進到有 [Authorize] 會出現的樣子，其實綠界是有傳給我們東西的，但進不去我們的網頁，因此把 [Authorize] 拿掉就沒這問題。
+
+![](https://hackmd.io/_uploads/BkX4iH7Th.png)
+
+但是，我還是想要加入，多一層保護~
+
+---
+
+## 實作2 -> ASP.NET_SessionId 保持登入
+
+### 多token保持登入狀態(Session)，自己刻一個登入確認
+有時候用內建的還要研究(ex:Authorize、FormsAuthentication)，倒不如自己刻一個，也比較好知道邏輯，到時有問題也比較知道怎麼D霸個。
+
+### 順序
+![](https://hackmd.io/_uploads/H1Fio9F0n.png)
+
+### CookieHelper.cs : SetCookie、GetCookie、RemoveCookie
+
+自己寫一個cookie的CRUD，可以設定有效時間
+```
+public static void SetCookie(string cookieName, string value, DateTime expires)
+{
+    HttpCookie cookie = HttpContext.Current.Request.Cookies[cookieName];
+    if (cookie != null)
+    {
+        cookie.Value = value;
+        cookie.Expires = expires;
+        HttpContext.Current.Response.Cookies.Add(cookie);
     }
     else
     {
-        fileName = 圖示;
+        cookie = new HttpCookie(cookieName);
+        cookie.Value = value;
+        cookie.Expires = expires;
+        HttpContext.Current.Response.Cookies.Add(cookie);
     }
-    string editdate = DateTime.Now.ToString("yyyyMMddHHmmss");
-    product.品名 = 品名;
-    product.單價 = 單價;
-    product.圖示 = fileName;
-    product.類別編號 = 類別編號;
-    product.編輯者 = User.Identity.Name;
-    product.修改日 = editdate;
-    db.SaveChanges();
-    return RedirectToAction("Index");
+}
+public static string GetCookieValue(string cookieName)
+{
+    HttpCookie cookie = HttpContext.Current.Request.Cookies[cookieName];
+    if (cookie == null || string.IsNullOrEmpty(cookie.Value))
+        return "";
+    else
+        return cookie.Value;
+}
+public static void RemoveCookie(string cookieName)
+{
+    SetCookie(cookieName, "", DateTime.Now.AddDays(-1));
+}                                                              
+```
+
+### Home2Controller.cs : login()
+進入login先清掉Session
+```
+public ActionResult login()
+{
+    //Session.Abandon(); 
+    CookieHelper.SetCookie("ASP.NET_SessionId", "", DateTime.Now.AddMinutes(1));
+    return View();
+}
+//登入
+[HttpPost]
+public ActionResult login(string account, string password)
+{
+    Database1Entities1 db = new Database1Entities1();
+    var member = db.member.Where(m => m.account == account && m.password == password).FirstOrDefault(); //查詢
+    if (member != null)
+    {
+        CookieHelper.SetCookie("Islogin", "true", DateTime.Now.AddMinutes(1));
+        return RedirectToAction("Buycart", "Home2"); //action, controller
+    }
+    return View();
 }
 ```
-## Edit.cshtml
+* 這裡清理是因為ASP MVC再啟動時會自動產生ASP.NET_SessionId[[介紹](https://blog.csdn.net/weixin_46879188/article/details/122133353)]
+* 發現放在Cookie的ASP.NET_SessionId在綠界跳轉回來後依然存在，所以為了能透夠過這東西來確認保持登入，先重置成""，在登入完後ASP.NET_SessionId會再自動產生新的值。
+
+> 補充 : 
+> * [Samesite Cookie綠界技術問題](https://www.ecpay.com.tw/CascadeFAQ/CascadeFAQ_Qa?nID=3914)
+> * [購物網站串接第三方API後，購物網站的SESSION被清空](https://ithelp.ithome.com.tw/questions/10201666)
+> * [Session.RemoveAll() 及Session.Abandon() 的差別](https://alen1985.pixnet.net/blog/post/26299563)
+
+
+### token.cs : 登入時紀錄 IsLogin、ASP.NET_SessionId
+![](https://hackmd.io/_uploads/BkgzGsKCn.png)
+
+再登入後，ASP.NET_SessionId自動產生值，設定Islogin為true
+
 ```
-@using Day09.Models
-
-@model Day09.Models.產品資料
-
-@{
-    ViewBag.Title = "產品編輯";
-    IEnumerable<產品類別> category = ViewBag.Category;
+[AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+public class token : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext filterContext)
+    {
+        //可以在中繼點觀察一下cookie的變化
+        string temp = CookieHelper.GetCookieValue("IsLogin"); //可用中繼點看變化
+        string NET_SessionId = CookieHelper.GetCookieValue("ASP.NET_SessionId");
+        //跳轉回來登入保持
+        if (NET_SessionId != null) HttpContext.Current.Session["IsLogin"] = "true";
+    }
 }
-
-<h2>產品編輯</h2>
-
-<form action="@Url.Action("Edit")" method="post" enctype="multipart/form-data">
-
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.產品編號, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.產品編號, new { htmlAttributes = new { @class = "form-control" , @readonly="readonly"} })
-                @Html.ValidationMessageFor(model => model.產品編號, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.品名, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.品名, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.品名, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.單價, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.單價, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.單價, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.圖示, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <input type="file" id="fImg" name="fImg" class="form-control" />
-                @Html.HiddenFor(model=>model.圖示)
-                @if (Model.圖示 == "question.png")
-                {
-                    @:無產品圖
-                }
-                else
-                { 
-                    <img src="~/Images/@Model.圖示" style="width:150px;" />
-                }
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2">
-                類別名稱
-            </label>
-            <div class="col-md-10">
-                <select id="類別編號" name="類別編號" class="form-control">
-                    @foreach (var item in category)
-                    {
-                        <option value="@item.類別編號"  @(item.類別編號==Model.類別編號 ? "selected" : "")   >
-                               @item.類別名稱
-                        </option>
-                    }
-                </select>
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="編輯" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-</form>
-
-
-
 ```
 
-[Day10](https://hackmd.io/@JpF6T4ZnQ4CVWYEPJpeFYw/HkD2ZESN5)
+> 補充:
+> * [客製 ActionFilterAttribute](https://jeffprogrammer.wordpress.com/2015/10/23/asp-net-mvc-%E5%AE%A2%E8%A3%BD-actionfilterattribute/)
+### Home2Controller.cs : Buycart()
+```
+//Islogin==true才能進
+[LoginFilter]
+public ActionResult Buycart()
+{
+    ...跟實作1一樣
+}
+private string GetCheckMacValue(Dictionary<string, string> order)...
+private string GetSHA256(string value)...
+```
+LoginFilter 判斷是否有登入
+
+### LoginFilter.cs
+```
+[AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
+public class LoginFilter : ActionFilterAttribute
+{
+    public override void OnActionExecuting(ActionExecutingContext filterContext)
+    {
+        string check_login = CookieHelper.GetCookieValue("Islogin");
+        // 存Session中，跳轉回來會被洗掉，因此順序是先進token再到這裡，在token中重新刻 Islogin
+        if (check_login != "true") HttpContext.Current.Session["Islogin"] = check_login;
+        var sessionName = HttpContext.Current.Session["Islogin"]; //可用中繼點看變化，如果跳轉回來不會有Islogin存在
+        if (sessionName == null || sessionName.ToString() == "") filterContext.Result = new RedirectResult("/Home2/login");
+    }
+}
+```
+跳轉回來後，Session的Islogin會被洗掉，因此會自動登出，所以在token那會把洗掉的Islogin寫回來，這裡就不會登出了。
+### Home2Contrller.cs : PayInfo()
+```
+[LoginFilter]
+public ActionResult PayInfo(FormCollection id)
+{
+    ...跟實作1一樣
+}
+```
+
+### Home2Contrller.cs : Index_logout()
+```
+public ActionResult Index_logout()
+{
+    Session.Clear();
+    CookieHelper.SetCookie("Islogin", "", DateTime.Now.AddDays(-1));
+    return RedirectToAction("login");
+}
+```
+### 綠界回傳
+![](https://hackmd.io/_uploads/Hk-0xs4an.png)
+
+挖賽，真的沒登出了，太好了>0<~
+
+
+END
