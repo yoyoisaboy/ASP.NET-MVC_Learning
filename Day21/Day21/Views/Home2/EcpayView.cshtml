@@ -1,0 +1,14 @@
+﻿@model System.Collections.Generic.Dictionary<string, string>
+
+<!DOCTYPE html>
+<html>
+<body>
+
+    @foreach (var key in @Model.Keys.ToList())
+    {
+        @(key) <input type="text" name="@key" value="@Model[key]" disabled /><br />
+    }
+
+</body>
+
+</html>
